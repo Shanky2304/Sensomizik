@@ -29,7 +29,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingRight="20dp"
-        android:layout_gravity="right|center_vertical" />
+        android:paddingEnd="20dp"
+        android:layout_gravity="end|center_vertical" />
 
     <android.support.v7.widget.AppCompatSeekBar
         android:id="@+id/seekbar"
