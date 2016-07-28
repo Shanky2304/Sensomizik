@@ -153,7 +153,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    //
+                    ////
                 }
             }
         };
