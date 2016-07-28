@@ -38,16 +38,15 @@ import java.util.Random;
  * Created by 1405089 on 7/15/2016.
  */
 public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.ViewHolder>{
+    private static final String TAG = "ListViewPopulator";
     List<String> musicName;
     List<String> musicAdd;
-    Context context;
+    Activity context;
     MediaPlayer mediaPlayer;
     Button media_play;
     Button media_stop;
     SeekBar seekBar;
-    Handler mhandler;
     TextView timer;
-
 
     public ListViewPopulator(Activity context, List<String> musicName, List<String> musicAdd)
     {
@@ -58,6 +57,8 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
         media_stop=(Button)context.findViewById(R.id.pause);
         seekBar= (SeekBar) context.findViewById(R.id.seekbar);
         timer=(TextView) context.findViewById(R.id.timer);
+
+
     }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -70,6 +71,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
         //To fetch the location of audio files on disk
         mediaPlayer=MediaPlayer.create(context, Uri.fromFile(new File(s)));
         mediaPlayer.start();
+        cont_seek();
         //seekBar.setProgress(0);
         //seekBar.setMax(mediaPlayer.getDuration());
 
@@ -118,26 +120,43 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
                 }
             }
         });
-        if (mediaPlayer != null) {
-            new Runnable() {
-                String time;
-                int progress = mediaPlayer.getCurrentPosition();
 
-                @Override
-                public void run() {
+}
+
+    void cont_seek(){
+        Runnable runnable=new Runnable() {
+
+            @Override
+            public void run() {
+                String time;
+                Log.d(TAG, "run");
+                while(mediaPlayer != null && mediaPlayer.isPlaying()){
+                    final int progress = mediaPlayer.getCurrentPosition();
                     int min = (progress / 1000) / 60;
+                    Log.d("auto","seek");
                     int sec = (progress / 1000) % 60;
                     if (sec < 10)
                         time = "0" + sec;
                     else
                         time = "" + sec;
-                    String elapsedTime = min + ":" + time + "";
-                    timer.setText(elapsedTime);
-                    //mediaPlayer.seekTo(seek_progress);
-                    new Handler().postDelayed(this, 1000);
+                    final String elapsedTime = min + ":" + time + "";
+                    context.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            timer.setText(elapsedTime);
+                            seekBar.setMax(mediaPlayer.getDuration());
+                            seekBar.setProgress(progress);
+                        }
+                    });
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }.run();
-        }
+            }
+        };
+        new Thread(runnable).start();
     }
 
 
