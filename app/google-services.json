@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "626393146355",
+    "firebase_url": "https://sensomizik.firebaseio.com",
+    "project_id": "sensomizik",
+    "storage_bucket": "sensomizik.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:626393146355:android:d602fa6cdb336fcd",
+        "android_client_info": {
+          "package_name": "alrightsolutions.example"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "626393146355-gli4aa9hchh5h72u9e6h23q1esed1pma.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYaJNNwVGNEmUMK2bp_qNSjOYGhPBwdfI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
