@@ -7,9 +7,11 @@ import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.RatingCompat;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -28,11 +30,14 @@ import android.widget.Toast;
 import com.github.nisrulz.sensey.FlipDetector;
 import com.github.nisrulz.sensey.Sensey;
 import com.github.nisrulz.sensey.ShakeDetector;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
+
+import alrightsolutions.example.PlayerFragments.FragmentPlaySmall;
 
 /**
  * Created by 1405089 on 7/15/2016.
@@ -40,23 +45,27 @@ import java.util.Random;
 public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.ViewHolder>{
     private static final String TAG = "ListViewPopulator";
     List<String> musicName;
-    List<String> musicAdd;
+    List<String> musicAdd,musicArtist;
     Activity context;
-    MediaPlayer mediaPlayer;
+    public static MediaPlayer mediaPlayer;
     Button media_play;
     Button media_stop;
     SeekBar seekBar;
     TextView timer;
-
-    public ListViewPopulator(Activity context, List<String> musicName, List<String> musicAdd)
+    public  static String SONG_NAME="";
+    public  static String SONG_ARTIST="";
+    SlidingUpPanelLayout slidingUpPanelLayout;
+    public ListViewPopulator(Activity context, List<String> musicName, List<String> musicAdd,List<String> musicArtist)
     {
         this.context=context;
         this.musicName=musicName;
         this.musicAdd=musicAdd;
+        this.musicArtist=musicArtist;
         media_play= (Button)context.findViewById(R.id.play);
         media_stop=(Button)context.findViewById(R.id.pause);
         seekBar= (SeekBar) context.findViewById(R.id.seekbar);
         timer=(TextView) context.findViewById(R.id.timer);
+        slidingUpPanelLayout=(SlidingUpPanelLayout)context.findViewById(R.id.sliding_layout);
 
 
     }
@@ -65,12 +74,15 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
         View v = LayoutInflater.from(context).inflate(R.layout.listview,parent,false);
         return new ViewHolder(v);
     }
+
     void something(String s)
     {
         try{mediaPlayer.stop();}catch (NullPointerException e){e.printStackTrace();}
         //To fetch the location of audio files on disk
         mediaPlayer=MediaPlayer.create(context, Uri.fromFile(new File(s)));
         mediaPlayer.start();
+        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        slidingUpPanelLayout.setPanelHeight(context.getWindowManager().getDefaultDisplay().getHeight()/6);
         cont_seek();
         //seekBar.setProgress(0);
         //seekBar.setMax(mediaPlayer.getDuration());
@@ -82,13 +94,17 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final String s = musicAdd.get(position);
         final String v = musicName.get(position);
+        final String artist=musicArtist.get(position);
         holder.data.setText(v);
         seeker();
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View vo) {
                 temp = position + 1;
                 something(s);
+                SONG_NAME=v;
+                SONG_ARTIST=artist;
+                fragmentJump(null);
                 seekBar.setProgress(0);
                 seekBar.setMax(mediaPlayer.getDuration());
                 // mediaPlayer.reset();
@@ -219,7 +235,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
         });
 
     }
-    int h=0;
+       int h=0;
     void change(){
         try{mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
         @Override
@@ -227,6 +243,9 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
 
             if(temp!=musicAdd.size())
             something(musicAdd.get(temp));
+            SONG_NAME=musicName.get(temp);
+            SONG_ARTIST=musicArtist.get(temp);
+            fragmentJump(null);
             temp=temp+1;
             seekBar.setProgress(0);
             seekBar.setMax(mediaPlayer.getDuration());
@@ -295,4 +314,19 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
            data=(TextView)itemView.findViewById(R.id.data);
        }
    }
+    public void switchContent(int id, Fragment fragment) {
+        if (context == null)
+            return;
+        if (context instanceof MainActivity) {
+            MainActivity mainActivity = (MainActivity) context;
+            Fragment frag = fragment;
+            mainActivity.switchContent(id, frag);
+
+        }
+
+    }
+    private void fragmentJump(String s) {
+      FragmentPlaySmall fragmentPlaySmall=new FragmentPlaySmall();
+        switchContent(R.id.frame, fragmentPlaySmall);
+    }
 }

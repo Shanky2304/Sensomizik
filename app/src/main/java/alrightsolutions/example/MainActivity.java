@@ -14,6 +14,8 @@ import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,10 +32,13 @@ import android.widget.Toast;
 import com.github.nisrulz.sensey.FlipDetector;
 import com.github.nisrulz.sensey.Sensey;
 import com.github.nisrulz.sensey.ShakeDetector;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import alrightsolutions.example.PlayerFragments.FragmentPlaySmall;
 
 public class MainActivity extends AppCompatActivity {
     int i=0;
@@ -41,19 +46,54 @@ public class MainActivity extends AppCompatActivity {
     int count = 0;
     RecyclerView.Adapter adapter;
     RecyclerView recyclerView;
-    List<String> musicName;
+    List<String> musicName,musicArtist;
     List<String> musicAdd;
     RecyclerView.LayoutManager linearLayoutManager;
+    SlidingUpPanelLayout slidingUpPanelLayout;
     MediaPlayer mplayer;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         musicName=new ArrayList<>();
+        musicArtist=new ArrayList<>();
         musicAdd=new ArrayList<>();
         recyclerView=(RecyclerView)findViewById(R.id.lview);
         linearLayoutManager=new LinearLayoutManager(MainActivity.this);
         recyclerView.setLayoutManager(linearLayoutManager);
+        slidingUpPanelLayout=(SlidingUpPanelLayout)findViewById(R.id.sliding_layout);
+        slidingUpPanelLayout.setPanelHeight(0);
+        slidingUpPanelLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                if(newState== SlidingUpPanelLayout.PanelState.COLLAPSED)
+                {   Toast.makeText(getApplicationContext(),"DONE",Toast.LENGTH_LONG).show();
+                    if (findViewById(R.id.frame) != null) {
+
+
+                        if (savedInstanceState != null) {
+                            return;
+                        }
+
+
+                        FragmentPlaySmall fragmentPlaySmall=new FragmentPlaySmall();
+
+                        getSupportFragmentManager().beginTransaction().replace(R.id.frame,fragmentPlaySmall).commit();
+                       // getSupportFragmentManager().beginTransaction()
+                              //  .add(R.id.frame,fragmentPlaySmall).commit();
+
+                    }
+                }
+                if(newState== SlidingUpPanelLayout.PanelState.EXPANDED)
+                    Toast.makeText(getApplicationContext(),"Expanded",Toast.LENGTH_LONG).show();
+            }
+        });
+
         //recyclerView.setHasFixedSize(true);
         ContentResolver cr = getContentResolver();
         int permissionCheck = ContextCompat.checkSelfPermission(this,
@@ -100,13 +140,17 @@ public class MainActivity extends AppCompatActivity {
                         cursor.moveToFirst();
                         while(count > 0) {
                             String name= cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
+                            String artist=cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
                             String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+                            //String image=cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+
                             //arrayList_Title.add(data);
                             // Toast.makeText(getApplicationContext(),data,Toast.LENGTH_LONG).show();
                             Log.d("lsf", data);
 
                             musicName.add(name);
                             musicAdd.add(data);
+                            musicArtist.add(artist);
                             cursor.moveToNext();
                             count--;
                         }
@@ -114,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                adapter=new ListViewPopulator(MainActivity.this,musicName,musicAdd);
+                                adapter=new ListViewPopulator(MainActivity.this,musicName,musicAdd,musicArtist);
                                 recyclerView.setAdapter(adapter);
                             }
                         });
@@ -167,5 +211,10 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode==MY_PERMISSIONS){
             Log.d("okY","okay");
         }
+    }
+    public void switchContent(int id, Fragment fragment) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(id, fragment, fragment.toString());
+        ft.commit();
     }
 }

@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorPlaybar">#ff6c09</color>
+    <color name="colorText">#424242</color>
 </resources>
