@@ -44,7 +44,7 @@ import alrightsolutions.example.PlayerFragments.FragmentPlaySmall;
  */
 public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.ViewHolder>{
     private static final String TAG = "ListViewPopulator";
-    List<String> musicName;
+    List<String> musicName,musicImage;
     List<String> musicAdd,musicArtist;
     Activity context;
     public static MediaPlayer mediaPlayer;
@@ -54,13 +54,15 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
     TextView timer;
     public  static String SONG_NAME="";
     public  static String SONG_ARTIST="";
+    public  static String SONG_IMAGE="";
     SlidingUpPanelLayout slidingUpPanelLayout;
-    public ListViewPopulator(Activity context, List<String> musicName, List<String> musicAdd,List<String> musicArtist)
+    public ListViewPopulator(Activity context, List<String> musicName, List<String> musicAdd,List<String> musicArtist,List<String> musicImage)
     {
         this.context=context;
         this.musicName=musicName;
         this.musicAdd=musicAdd;
         this.musicArtist=musicArtist;
+        this.musicImage=musicImage;
         media_play= (Button)context.findViewById(R.id.play);
         media_stop=(Button)context.findViewById(R.id.pause);
         seekBar= (SeekBar) context.findViewById(R.id.seekbar);
@@ -82,7 +84,9 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
         mediaPlayer=MediaPlayer.create(context, Uri.fromFile(new File(s)));
         mediaPlayer.start();
         slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-        slidingUpPanelLayout.setPanelHeight(context.getWindowManager().getDefaultDisplay().getHeight()/6);
+
+        slidingUpPanelLayout.setPanelHeight(120);
+
         cont_seek();
         //seekBar.setProgress(0);
         //seekBar.setMax(mediaPlayer.getDuration());
@@ -95,6 +99,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
         final String s = musicAdd.get(position);
         final String v = musicName.get(position);
         final String artist=musicArtist.get(position);
+        final String image=musicImage.get(position);
         holder.data.setText(v);
         seeker();
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -104,6 +109,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
                 something(s);
                 SONG_NAME=v;
                 SONG_ARTIST=artist;
+                SONG_IMAGE=image;
                 fragmentJump(null);
                 seekBar.setProgress(0);
                 seekBar.setMax(mediaPlayer.getDuration());
@@ -245,6 +251,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
             something(musicAdd.get(temp));
             SONG_NAME=musicName.get(temp);
             SONG_ARTIST=musicArtist.get(temp);
+            SONG_IMAGE=musicImage.get(temp);
             fragmentJump(null);
             temp=temp+1;
             seekBar.setProgress(0);

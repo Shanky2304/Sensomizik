@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView.Adapter adapter;
     RecyclerView recyclerView;
     List<String> musicName,musicArtist;
-    List<String> musicAdd;
+    List<String> musicAdd,musicImage;
     RecyclerView.LayoutManager linearLayoutManager;
     SlidingUpPanelLayout slidingUpPanelLayout;
     MediaPlayer mplayer;
@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         musicName=new ArrayList<>();
         musicArtist=new ArrayList<>();
         musicAdd=new ArrayList<>();
+        musicImage=new ArrayList<>();
         recyclerView=(RecyclerView)findViewById(R.id.lview);
         linearLayoutManager=new LinearLayoutManager(MainActivity.this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -142,7 +143,17 @@ public class MainActivity extends AppCompatActivity {
                             String name= cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
                             String artist=cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
                             String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-                            //String image=cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+                            String albumId=cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+                            Cursor cursor1 = managedQuery(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
+                                    new String[] {MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART},
+                                    MediaStore.Audio.Albums._ID+ "=?",
+                                    new String[] {String.valueOf(albumId)},
+                                    null);
+                            String image="";
+                            if (cursor1.moveToFirst()) {
+                                image = cursor1.getString(cursor1.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+                                // do whatever you need to do
+                            }
 
                             //arrayList_Title.add(data);
                             // Toast.makeText(getApplicationContext(),data,Toast.LENGTH_LONG).show();
@@ -151,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
                             musicName.add(name);
                             musicAdd.add(data);
                             musicArtist.add(artist);
+                            musicImage.add(image);
                             cursor.moveToNext();
                             count--;
                         }
@@ -158,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                adapter=new ListViewPopulator(MainActivity.this,musicName,musicAdd,musicArtist);
+                                adapter=new ListViewPopulator(MainActivity.this,musicName,musicAdd,musicArtist,musicImage);
                                 recyclerView.setAdapter(adapter);
                             }
                         });

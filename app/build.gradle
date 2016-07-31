@@ -32,5 +32,6 @@ dependencies {
     compile 'shortroid.shortroid:shortroid:1.0.0'
     compile 'mohitbadwal.rxconnect:rxconnect:1.0.33'
     compile 'com.google.code.gson:gson:2.6.2'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }
 apply plugin: 'com.google.gms.google-services'
