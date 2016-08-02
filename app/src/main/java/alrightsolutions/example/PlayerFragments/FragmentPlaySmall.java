@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -44,6 +45,7 @@ public class FragmentPlaySmall extends Fragment {
     RelativeLayout relativeLayout;
     String s,s1;
     ImageView musicImage;
+    SlidingUpPanelLayout slidingUpPanelLayout;
     int i=1,k=1,f=1;
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Nullable
@@ -55,6 +57,14 @@ public class FragmentPlaySmall extends Fragment {
         album=(TextView)rootView.findViewById(R.id.music_artist);
         play=(Button)rootView.findViewById(R.id.music_play);
         relativeLayout=(RelativeLayout)rootView.findViewById(R.id.rel_play);
+        slidingUpPanelLayout=(SlidingUpPanelLayout)getActivity().findViewById(R.id.sliding_layout);
+     /*   relativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity().getApplicationContext(),"Clicked dd",Toast.LENGTH_LONG).show();
+                slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+            }
+        });*/
         musicImage=(ImageView)rootView.findViewById(R.id.music_art);
 
         ViewTreeObserver viewTreeObserver = relativeLayout.getViewTreeObserver();
@@ -83,7 +93,7 @@ public class FragmentPlaySmall extends Fragment {
         s1=ListViewPopulator.SONG_ARTIST;
         title.setText(s);
         album.setText(s1);
-        if(ListViewPopulator.SONG_IMAGE.length()>0)
+        if(ListViewPopulator.SONG_IMAGE!=null)
         setMusicImage(musicImage,ListViewPopulator.SONG_IMAGE);
         play.setBackground(getResources().getDrawable(R.drawable.pause));
         play.setOnClickListener(new View.OnClickListener() {

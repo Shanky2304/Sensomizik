@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -38,12 +39,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import alrightsolutions.example.PlayerFragments.FragmentPlayBig;
 import alrightsolutions.example.PlayerFragments.FragmentPlaySmall;
 
 public class MainActivity extends AppCompatActivity {
     int i=0;
     int MY_PERMISSIONS=1;
-    int count = 0;
+    int count = 0,x=0;
     RecyclerView.Adapter adapter;
     RecyclerView recyclerView;
     List<String> musicName,musicArtist;
@@ -55,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         musicName=new ArrayList<>();
         musicArtist=new ArrayList<>();
         musicAdd=new ArrayList<>();
@@ -71,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+            public void onPanelStateChanged(final View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
                 if(newState== SlidingUpPanelLayout.PanelState.COLLAPSED)
                 {   Toast.makeText(getApplicationContext(),"DONE",Toast.LENGTH_LONG).show();
                     if (findViewById(R.id.frame) != null) {
@@ -87,12 +91,40 @@ public class MainActivity extends AppCompatActivity {
                         getSupportFragmentManager().beginTransaction().replace(R.id.frame,fragmentPlaySmall).commit();
                        // getSupportFragmentManager().beginTransaction()
                               //  .add(R.id.frame,fragmentPlaySmall).commit();
+                        getSupportActionBar().show();
+                    }
+                }
+                ViewTreeObserver viewTreeObserver = panel.getViewTreeObserver();
+                viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        panel.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        x= panel.getMeasuredHeight();
+                        Toast.makeText(getApplicationContext(), "Expanded" + x, Toast.LENGTH_LONG).show();
+                        //  Toast.makeText(getActivity().getApplicationContext(),""+FragmentLength,Toast.LENGTH_LONG).show();
+                    }
+                });
+                if(newState== SlidingUpPanelLayout.PanelState.EXPANDED && x==1230) {
+                    Toast.makeText(getApplicationContext(), "Expanded", Toast.LENGTH_LONG).show();
+                    if (findViewById(R.id.frame) != null) {
+
+
+                        if (savedInstanceState != null) {
+                            return;
+                        }
+
+
+                        FragmentPlayBig fr = new FragmentPlayBig();
+
+                        getSupportFragmentManager().beginTransaction().replace(R.id.frame, fr).commit();
+                        getSupportActionBar().hide();
+                        // getSupportFragmentManager().beginTransaction()
+                        //  .add(R.id.frame,fragmentPlaySmall).commit();
 
                     }
                 }
-                if(newState== SlidingUpPanelLayout.PanelState.EXPANDED)
-                    Toast.makeText(getApplicationContext(),"Expanded",Toast.LENGTH_LONG).show();
             }
+
         });
 
         //recyclerView.setHasFixedSize(true);
@@ -188,8 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
         Sensey.getInstance().init(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
 
 
     }
@@ -229,4 +260,23 @@ public class MainActivity extends AppCompatActivity {
         ft.replace(id, fragment, fragment.toString());
         ft.commit();
     }
+    @Override
+    public void onBackPressed() {
+        if(slidingUpPanelLayout.getPanelState()== SlidingUpPanelLayout.PanelState.COLLAPSED)
+            super.onBackPressed();
+        else if(slidingUpPanelLayout.getPanelState()== SlidingUpPanelLayout.PanelState.EXPANDED) {
+            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+
+        }
+
+
+        else {
+
+            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+
+        }
+
+
+    }
 }
+

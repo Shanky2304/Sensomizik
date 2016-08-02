@@ -85,7 +85,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
         mediaPlayer.start();
         slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
 
-        slidingUpPanelLayout.setPanelHeight(120);
+        slidingUpPanelLayout.setPanelHeight(125);
 
         cont_seek();
         //seekBar.setProgress(0);
