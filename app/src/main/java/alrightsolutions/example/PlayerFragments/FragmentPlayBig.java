@@ -151,7 +151,7 @@ public class FragmentPlayBig extends Fragment {
         Picasso.with(getActivity()).load(new File(ListViewPopulator.SONG_IMAGE)).into(new Target() {
             @Override
             public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-                Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
+                /*Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
                     @Override
                     public void onGenerated(Palette palette) {
                         int primary = getResources().getColor(R.color.colorPrimaryDark);
@@ -163,8 +163,25 @@ public class FragmentPlayBig extends Fragment {
                         musicImage.setImageBitmap(bitmap);
                         linePlay.setBackgroundColor(x);
                     }
-                });
+                });*/
+                Palette.PaletteAsyncListener paletteListener = new Palette.PaletteAsyncListener() {
+                    public void onGenerated(Palette palette) {
+                        int defaults = 0x000000;
+                        int primary = palette.getLightMutedColor(defaults);
+                  //      int x = palette.getMutedColor(primary);
+                        musicImageBlur.setImageBitmap(bitmap);
 
+                           Drawable d=musicImageBlur.getDrawable();
+                         Bitmap myBitmap = ((BitmapDrawable)d).getBitmap();
+                         musicImageBlur.setImageBitmap(NativeStackBlur.process(myBitmap,100));
+                        musicImage.setImageBitmap(bitmap);
+                     //   linePlay.setBackgroundColor(primary);
+                    }
+
+                };
+                if (bitmap != null && !bitmap.isRecycled()) {
+                    Palette.from(bitmap).generate(paletteListener);
+                }
             }
 
 

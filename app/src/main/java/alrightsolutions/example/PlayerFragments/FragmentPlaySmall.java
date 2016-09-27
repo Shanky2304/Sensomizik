@@ -1,12 +1,17 @@
 package alrightsolutions.example.PlayerFragments;
 
 import android.annotation.TargetApi;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.graphics.Palette;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -159,7 +164,35 @@ public class FragmentPlaySmall extends Fragment {
         Picasso.with(getActivity()).load(new File(s)).into(image, new Callback() {
             @Override
             public void onSuccess() {
+                Palette.PaletteAsyncListener paletteListener = new Palette.PaletteAsyncListener() {
+                    public void onGenerated(Palette palette) {
+                        int defaults = 0x0;
+                        Palette.Swatch swatch = palette.getMutedSwatch();
+                        int primary= defaults;
+                        int text=defaults;
+                        if (swatch != null) {
+                            primary = swatch.getRgb();
+                            text=swatch.getBodyTextColor();
+                        }
 
+
+                        //      int x = palette.getMutedColor(primary);
+                      //  musicImageBlur.setImageResource(R.color.colorText);
+                        //   Drawable d=musicImageBlur.getDrawable();
+                        // Bitmap myBitmap = ((ColorDrawable)d).
+                        // musicImageBlur.setImageBitmap(NativeStackBlur.process(myBitmap,30));
+                        //musicImage.setImageBitmap(bitmap);
+                     //   relativeLayout.setBackgroundColor(primary);
+                       // title.setTextColor(text);
+                     //   album.setTextColor(text);
+                    }
+
+                };
+                Drawable d=image.getDrawable();
+                 Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+                if (bitmap != null && !bitmap.isRecycled()) {
+                    Palette.from(bitmap).generate(paletteListener);
+                }
             }
 
             @Override

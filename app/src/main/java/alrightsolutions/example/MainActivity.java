@@ -2,6 +2,7 @@ package alrightsolutions.example;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
@@ -17,6 +18,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -49,7 +51,7 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends FragmentActivity {
     int i=0;
     int MY_PERMISSIONS=1;
     int count = 0,x=0;
@@ -65,9 +67,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setContentView(R.layout.content_main);
+    //    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+      //  setSupportActionBar(toolbar);
         realmConfig = new RealmConfiguration.Builder(MainActivity.this).deleteRealmIfMigrationNeeded().build();
         realm = Realm.getInstance(realmConfig);
         musicName=new ArrayList<>();
@@ -107,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                         transaction1.commit();
                        // getSupportFragmentManager().beginTransaction()
                               //  .add(R.id.frame,fragmentPlaySmall).commit();
-                        getSupportActionBar().show();
+                     //   getSupportActionBar().show();
                     }
                 }
                 ViewTreeObserver viewTreeObserver = panel.getViewTreeObserver();
@@ -137,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                         transaction1.setCustomAnimations(R.anim.fade_out,R.anim.fade_in,  R.anim.fade_out,R.anim.fade_in);
                         transaction1.replace(R.id.frame, fr);
                         transaction1.commit();
-                        getSupportActionBar().hide();
+                       // getSupportActionBar().hide();
                         // getSupportFragmentManager().beginTransaction()
                         //  .add(R.id.frame,fragmentPlaySmall).commit();
 
@@ -199,10 +201,10 @@ public class MainActivity extends AppCompatActivity {
                             String artist=cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
                             String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
                             String albumId=cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
-                            Cursor cursor1 = managedQuery(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
-                                    new String[] {MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART},
-                                    MediaStore.Audio.Albums._ID+ "=?",
-                                    new String[] {String.valueOf(albumId)},
+                            Cursor cursor1 = getContentResolver().query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
+                                    new String[]{MediaStore.Audio.Albums._ID, MediaStore.Audio.Albums.ALBUM_ART},
+                                    MediaStore.Audio.Albums._ID + "=?",
+                                    new String[]{String.valueOf(albumId)},
                                     null);
                             String image="";
                             if (cursor1.moveToFirst()) {
@@ -245,7 +247,9 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                     try {
-                        cursor.close();
+                        if (cursor != null) {
+                            cursor.close();
+                        }
                     } catch (NullPointerException npe) {
                         npe.printStackTrace();
                     }

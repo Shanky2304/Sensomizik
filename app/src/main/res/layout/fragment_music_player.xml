@@ -20,7 +20,7 @@
         android:layout_marginBottom="60dp"
         android:layout_marginTop="@dimen/action_bar_height"
         android:layout_height="wrap_content">
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="match_parent"
             android:layout_height="350dp"
             android:paddingBottom="20dp"
@@ -51,7 +51,7 @@
     </LinearLayout>
     </RelativeLayout>
     <LinearLayout
-        android:background="@color/colorPlaybar"
+        android:background="@android:color/transparent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/line_play"
