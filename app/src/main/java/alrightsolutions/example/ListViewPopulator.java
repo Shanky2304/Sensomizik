@@ -83,6 +83,9 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
         //To fetch the location of audio files on disk
         mediaPlayer=MediaPlayer.create(context, Uri.fromFile(new File(s)));
         mediaPlayer.start();
+        SONG_NAME=musicName.get(temp);
+        SONG_ARTIST=musicArtist.get(temp);
+        SONG_IMAGE=musicImage.get(temp);
         slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
 
         slidingUpPanelLayout.setPanelHeight(125);
@@ -91,7 +94,9 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
         //seekBar.setProgress(0);
         //seekBar.setMax(mediaPlayer.getDuration());
 
-    } int temp=0;
+    }
+
+    int temp=0;
 
     int i=0;
     @Override
@@ -249,9 +254,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
 
             if(temp!=musicAdd.size())
             something(musicAdd.get(temp));
-            SONG_NAME=musicName.get(temp);
-            SONG_ARTIST=musicArtist.get(temp);
-            SONG_IMAGE=musicImage.get(temp);
+
             fragmentJump(null);
             temp=temp+1;
             seekBar.setProgress(0);
@@ -294,8 +297,11 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
         @Override
         public void onShakeDetected() {
             try {
-                if(h==1)
-                something(musicAdd.get(randomG(musicAdd.size()-1,0)));
+                if(h==1) {
+                    temp=randomG(musicAdd.size() - 1, 0);
+                    something(musicAdd.get(temp));
+                    fragmentJump(null);
+                }
             }catch (Throwable throwable)
             {
                 throwable.printStackTrace();

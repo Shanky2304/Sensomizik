@@ -2,6 +2,8 @@ package alrightsolutions.example;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -36,11 +38,16 @@ import com.github.nisrulz.sensey.ShakeDetector;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
+import alrightsolutions.example.Model.Music;
 import alrightsolutions.example.PlayerFragments.FragmentPlayBig;
 import alrightsolutions.example.PlayerFragments.FragmentPlaySmall;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity {
     int i=0;
@@ -53,12 +60,16 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView.LayoutManager linearLayoutManager;
     SlidingUpPanelLayout slidingUpPanelLayout;
     MediaPlayer mplayer;
+    RealmConfiguration realmConfig;
+    Realm realm;
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        realmConfig = new RealmConfiguration.Builder(MainActivity.this).deleteRealmIfMigrationNeeded().build();
+        realm = Realm.getInstance(realmConfig);
         musicName=new ArrayList<>();
         musicArtist=new ArrayList<>();
         musicAdd=new ArrayList<>();
@@ -86,9 +97,14 @@ public class MainActivity extends AppCompatActivity {
                         }
 
 
+
+
                         FragmentPlaySmall fragmentPlaySmall=new FragmentPlaySmall();
 
-                        getSupportFragmentManager().beginTransaction().replace(R.id.frame,fragmentPlaySmall).commit();
+                        FragmentTransaction transaction1 = getSupportFragmentManager().beginTransaction();
+                        transaction1.setCustomAnimations(R.anim.fade_out,R.anim.fade_in,  R.anim.fade_out,R.anim.fade_in);
+                        transaction1.replace(R.id.frame, fragmentPlaySmall);
+                        transaction1.commit();
                        // getSupportFragmentManager().beginTransaction()
                               //  .add(R.id.frame,fragmentPlaySmall).commit();
                         getSupportActionBar().show();
@@ -100,12 +116,12 @@ public class MainActivity extends AppCompatActivity {
                     public void onGlobalLayout() {
                         panel.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                         x= panel.getMeasuredHeight();
-                        Toast.makeText(getApplicationContext(), "Expanded" + x, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "Expanded" + x, Toast.LENGTH_LONG).show();
                         //  Toast.makeText(getActivity().getApplicationContext(),""+FragmentLength,Toast.LENGTH_LONG).show();
                     }
                 });
-                if(newState== SlidingUpPanelLayout.PanelState.EXPANDED && x==1230) {
-                    Toast.makeText(getApplicationContext(), "Expanded", Toast.LENGTH_LONG).show();
+                if(newState== SlidingUpPanelLayout.PanelState.EXPANDED && x>1000) {
+                //    Toast.makeText(getApplicationContext(), "Expanded", Toast.LENGTH_LONG).show();
                     if (findViewById(R.id.frame) != null) {
 
 
@@ -116,7 +132,11 @@ public class MainActivity extends AppCompatActivity {
 
                         FragmentPlayBig fr = new FragmentPlayBig();
 
-                        getSupportFragmentManager().beginTransaction().replace(R.id.frame, fr).commit();
+
+                        FragmentTransaction transaction1 = getSupportFragmentManager().beginTransaction();
+                        transaction1.setCustomAnimations(R.anim.fade_out,R.anim.fade_in,  R.anim.fade_out,R.anim.fade_in);
+                        transaction1.replace(R.id.frame, fr);
+                        transaction1.commit();
                         getSupportActionBar().hide();
                         // getSupportFragmentManager().beginTransaction()
                         //  .add(R.id.frame,fragmentPlaySmall).commit();
@@ -161,7 +181,10 @@ public class MainActivity extends AppCompatActivity {
             Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
             String selection = MediaStore.Audio.Media.IS_MUSIC + "!=0";
             String sortorder = MediaStore.Audio.Media.TITLE;
-
+            final List<Music> musics=new ArrayList<>();
+            final boolean b=checkEmptyRealm();
+            if(!b)
+                getFromRealm();
             final Cursor cursor = cr.query(uri, null, selection, null, sortorder);
 
             //ArrayList<String> arrayList_Title = null;
@@ -186,11 +209,20 @@ public class MainActivity extends AppCompatActivity {
                                 image = cursor1.getString(cursor1.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
                                 // do whatever you need to do
                             }
-
+                            cursor1.close();
                             //arrayList_Title.add(data);
                             // Toast.makeText(getApplicationContext(),data,Toast.LENGTH_LONG).show();
                             Log.d("lsf", data);
+                            if(b) {
+                                final Music music = new Music();
+                                music.setMusicName(name);
+                                music.setMusicURI(data);
+                                music.setMusicArtist(artist);
+                                music.setAlbumArt(image);
+                                music.setAlbumId(albumId);
 
+                                musics.add(music);
+                            }
                             musicName.add(name);
                             musicAdd.add(data);
                             musicArtist.add(artist);
@@ -202,8 +234,12 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                adapter=new ListViewPopulator(MainActivity.this,musicName,musicAdd,musicArtist,musicImage);
-                                recyclerView.setAdapter(adapter);
+                                if(b) {
+                                    addToRealm(musics);
+                                    Log.d("Mine",musics.size()+"");
+                                    adapter = new ListViewPopulator(MainActivity.this, musicName, musicAdd, musicArtist, musicImage);
+                                    recyclerView.setAdapter(adapter);
+                                }
                             }
                         });
 
@@ -275,6 +311,51 @@ public class MainActivity extends AppCompatActivity {
             slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
 
         }
+
+
+    }
+    void addToRealm(final List<Music> musics)
+    {
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+
+                realm.copyToRealm(musics);
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                error.printStackTrace();
+                Toast.makeText(getApplicationContext(),error.getLocalizedMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+    boolean checkEmptyRealm()
+    {
+        RealmResults<Music> musicRealmResults=realm.where(Music.class).findAll();
+        Log.d("Mine Realm",musicRealmResults.size()+"");
+        return musicRealmResults.size() == 0;
+    }
+    void getFromRealm()
+    {
+        RealmResults<Music> musicRealmResults=realm.where(Music.class).findAll();
+            List<String> musicName = new ArrayList<>();
+            List<String> musicAdd = new ArrayList<>();
+            List<String> musicArtist = new ArrayList<>();
+            List<String> musicImage = new ArrayList<>();
+            for (int i = 0; i < musicRealmResults.size(); i++) {
+                musicName.add(musicRealmResults.get(i).getMusicName());
+                musicAdd.add(musicRealmResults.get(i).getMusicURI());
+                musicArtist.add(musicRealmResults.get(i).getMusicArtist());
+                musicImage.add(musicRealmResults.get(i).getAlbumArt());
+            }
+            adapter = new ListViewPopulator(MainActivity.this, musicName, musicAdd, musicArtist, musicImage);
+            recyclerView.setAdapter(adapter);
 
 
     }

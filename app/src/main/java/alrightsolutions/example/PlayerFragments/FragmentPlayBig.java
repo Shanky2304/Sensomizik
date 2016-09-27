@@ -147,7 +147,7 @@ public class FragmentPlayBig extends Fragment {
         setImages();
     }
     void setImages()
-    {
+    {   try {
         Picasso.with(getActivity()).load(new File(ListViewPopulator.SONG_IMAGE)).into(new Target() {
             @Override
             public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -157,15 +157,16 @@ public class FragmentPlayBig extends Fragment {
                         int primary = getResources().getColor(R.color.colorPrimaryDark);
                         int x = palette.getMutedColor(primary);
                         musicImageBlur.setImageResource(R.color.colorText);
-                     //   Drawable d=musicImageBlur.getDrawable();
-                       // Bitmap myBitmap = ((ColorDrawable)d).
-                       // musicImageBlur.setImageBitmap(NativeStackBlur.process(myBitmap,30));
+                        //   Drawable d=musicImageBlur.getDrawable();
+                        // Bitmap myBitmap = ((ColorDrawable)d).
+                        // musicImageBlur.setImageBitmap(NativeStackBlur.process(myBitmap,30));
                         musicImage.setImageBitmap(bitmap);
                         linePlay.setBackgroundColor(x);
                     }
                 });
 
             }
+
 
             @Override
             public void onBitmapFailed(Drawable errorDrawable) {
@@ -178,6 +179,10 @@ public class FragmentPlayBig extends Fragment {
 
             }
         });
+    }catch (Exception e)
+    {
+        e.printStackTrace();
+    }
     }
 
 }
