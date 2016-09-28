@@ -72,9 +72,14 @@ public class FragmentPlayBig extends Fragment {
         musicArtist=(TextView)view.findViewById(R.id.music_artist_big);
         play=(Button)view.findViewById(R.id.music_play_big);
         linePlay=(LinearLayout)view.findViewById(R.id.line_play);
-        seekBar=(SeekBar)view.findViewById(R.id.seekbar);
-        seekBar.setMax(mediaPlayer.getDuration());
-        seekBar.setProgress(PROGRESS);
+        try {
+            seekBar = (SeekBar) view.findViewById(R.id.seekbar);
+            seekBar.setMax(mediaPlayer.getDuration());
+            seekBar.setProgress(PROGRESS);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     void setControls()

@@ -73,6 +73,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
     public  static String SONG_NAME="";
     public  static String SONG_ARTIST="";
     public  static String SONG_IMAGE="";
+    public static String SONG_ADDRESS="";
     SlidingUpPanelLayout slidingUpPanelLayout;
     public ListViewPopulator(Activity context, List<String> musicName, List<String> musicAdd,List<String> musicArtist,List<String> musicImage)
     {
@@ -104,6 +105,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
         SONG_NAME=musicName.get(temp);
         SONG_ARTIST=musicArtist.get(temp);
         SONG_IMAGE=musicImage.get(temp);
+        SONG_ADDRESS=musicAdd.get(temp);
         setImages(musicImage.get(h));
         slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
 

@@ -21,11 +21,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
@@ -59,13 +62,14 @@ public class MainActivity extends FragmentActivity {
     int MY_PERMISSIONS=1;
     int count = 0,x=0;
     FrameLayout frameLayout;
+    FloatingActionButton floatingActionButton;
     RecyclerView.Adapter adapter;
     RecyclerView recyclerView;
     List<String> musicName,musicArtist;
     List<String> musicAdd,musicImage;
     RecyclerView.LayoutManager linearLayoutManager;
     SlidingUpPanelLayout slidingUpPanelLayout;
-    MediaPlayer mplayer;
+    PhoneStateListener phoneStateListener;
     RealmConfiguration realmConfig;
     Realm realm;
     @Override
@@ -74,14 +78,45 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.content_main);
     //    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
       //  setSupportActionBar(toolbar);
+        MyApplication.setMainActivity(this);
+
         realmConfig = new RealmConfiguration.Builder(MainActivity.this).deleteRealmIfMigrationNeeded().build();
         realm = Realm.getInstance(realmConfig);
+        floatingActionButton=(FloatingActionButton)findViewById(R.id.fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this,SearchActivity.class));
+            }
+        });
         musicName=new ArrayList<>();
         musicArtist=new ArrayList<>();
         musicAdd=new ArrayList<>();
         musicImage=new ArrayList<>();
         recyclerView=(RecyclerView)findViewById(R.id.lview);
 
+        phoneStateListener=new PhoneStateListener(){
+            @Override
+            public void onCallStateChanged(int state, String incomingNumber) {
+                    if (state == TelephonyManager.CALL_STATE_RINGING) {
+                        //Incoming call: Pause music
+                        try{ListViewPopulator.mediaPlayer.pause();}catch (Exception e){e.printStackTrace();}
+                    } else if(state == TelephonyManager.CALL_STATE_IDLE) {
+                        //Not in call: Play music
+                       try{ ListViewPopulator.mediaPlayer.start();}catch (Exception e){e.printStackTrace();}
+                    } else if(state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                        //A call is dialing, active or on hold
+                        try {
+                            ListViewPopulator.mediaPlayer.pause();
+                        }catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                    super.onCallStateChanged(state, incomingNumber);
+
+            }
+        };
         linearLayoutManager=new LinearLayoutManager(MainActivity.this);
         recyclerView.setLayoutManager(linearLayoutManager);
         VerticalRecyclerViewFastScroller fastScroller = (VerticalRecyclerViewFastScroller)findViewById(R.id.fast_scroller);
@@ -271,6 +306,24 @@ public class MainActivity extends FragmentActivity {
 
 
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        TelephonyManager mgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        if (mgr != null) {
+            mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+
+        }
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+            TelephonyManager mngr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+            if(mngr != null) {
+                mngr.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
+            }
     }
 
     @Override
