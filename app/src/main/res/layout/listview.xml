@@ -9,16 +9,28 @@
     android:layout_width="wrap_content"
     android:fontFamily="sans-serif"
     android:textColor="#ffffff"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:textSize="15sp"
     android:layout_height="wrap_content"
     android:layout_marginTop="20dp"
-    android:textAppearance="?android:attr/textAppearanceLarge"/>
+   />
+    <TextView
+        android:id="@+id/data_album"
+        android:layout_width="wrap_content"
+        android:fontFamily="sans-serif"
+        android:textColor="#e0e0e0"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textSize="13sp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        />
     <View
         android:layout_width="match_parent"
-        android:layout_height="0.3dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_height="0.7dp"
         android:layout_marginTop="20dp"
-        android:background="#ffffff"
+        android:background="#efebe9"
         />
 
 </LinearLayout>

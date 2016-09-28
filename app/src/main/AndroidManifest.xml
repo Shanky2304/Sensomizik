@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="alrightsolutions.example" >
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-
+    <uses-sdk tools:overrideLibrary="xyz.danoz.recyclerviewfastscroller"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

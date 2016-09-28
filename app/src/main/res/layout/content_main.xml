@@ -4,27 +4,41 @@
     xmlns:app="http://schemas.android.com/tools"
     android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:gravity="bottom"
     sothree:umanoParallaxOffset="10dp"
     sothree:umanoShadowHeight="1dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:scaleType="centerCrop"
+            android:id="@+id/music_image_blured"
+            android:src="@drawable/grad1"/>
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#000000"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:id="@+id/frame_main"
     tools:context="alrightsolutions.example.MainActivity"
     tools:showIn="@layout/activity_main">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/lview"
         android:layout_width="match_parent"
-        android:paddingLeft="7dp"
-        android:paddingRight="7dp"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
+    <xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller
+        android:id="@+id/fast_scroller"
+        android:layout_width="10dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        />
 
 <LinearLayout
     android:background="@color/colorPlaybar"
@@ -74,6 +88,7 @@
 
 
 </FrameLayout>
+    </RelativeLayout>
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

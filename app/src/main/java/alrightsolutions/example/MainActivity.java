@@ -9,6 +9,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.drawable.GradientDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -31,6 +32,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -50,11 +52,13 @@ import alrightsolutions.example.PlayerFragments.FragmentPlaySmall;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
+import xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller;
 
 public class MainActivity extends FragmentActivity {
     int i=0;
     int MY_PERMISSIONS=1;
     int count = 0,x=0;
+    FrameLayout frameLayout;
     RecyclerView.Adapter adapter;
     RecyclerView recyclerView;
     List<String> musicName,musicArtist;
@@ -77,8 +81,12 @@ public class MainActivity extends FragmentActivity {
         musicAdd=new ArrayList<>();
         musicImage=new ArrayList<>();
         recyclerView=(RecyclerView)findViewById(R.id.lview);
+
         linearLayoutManager=new LinearLayoutManager(MainActivity.this);
         recyclerView.setLayoutManager(linearLayoutManager);
+        VerticalRecyclerViewFastScroller fastScroller = (VerticalRecyclerViewFastScroller)findViewById(R.id.fast_scroller);
+        fastScroller.setRecyclerView(recyclerView);
+        recyclerView.setOnScrollListener(fastScroller.getOnScrollListener());
         slidingUpPanelLayout=(SlidingUpPanelLayout)findViewById(R.id.sliding_layout);
         slidingUpPanelLayout.setPanelHeight(0);
         slidingUpPanelLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
@@ -298,7 +306,7 @@ public class MainActivity extends FragmentActivity {
     public void switchContent(int id, Fragment fragment) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(id, fragment, fragment.toString());
-        ft.commit();
+        ft.commitAllowingStateLoss();
     }
     @Override
     public void onBackPressed() {
@@ -363,5 +371,6 @@ public class MainActivity extends FragmentActivity {
 
 
     }
+
 }
 

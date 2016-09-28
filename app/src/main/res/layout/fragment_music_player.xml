@@ -11,7 +11,7 @@
             android:layout_height="fill_parent"
             android:scaleType="centerCrop"
             android:id="@+id/music_image_blured"
-            android:src="@color/colorPrimary"/>
+            android:src="@drawable/grad1"/>
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_marginLeft="30dp"
@@ -33,16 +33,18 @@
             android:orientation="vertical"
             android:layout_height="wrap_content"
             >
-            <alrightsolutions.example.Customizables.AppFontTextView
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
                 android:textSize="25sp"
                 android:id="@+id/music_name_big"
                 android:text="Music Name"
                 android:textColor="@android:color/white" />
-            <alrightsolutions.example.Customizables.AppFontTextView
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
                 android:textSize="15sp"
                 android:id="@+id/music_artist_big"
                 android:text="Music Artist"
@@ -58,16 +60,17 @@
         android:layout_gravity="bottom"
         android:orientation="vertical">
 
-            <alrightsolutions.example.Customizables.AppFontTextView
+            <TextView
             android:id="@+id/timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
             android:paddingRight="20dp"
                 android:layout_marginTop="5dp"
             android:paddingEnd="20dp"
             android:layout_gravity="end|center_vertical" />
 
-        <android.support.v7.widget.AppCompatSeekBar
+        <SeekBar
             android:id="@+id/seekbar"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
