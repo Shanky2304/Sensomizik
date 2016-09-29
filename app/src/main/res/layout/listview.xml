@@ -1,36 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="bottom">
-
+    android:paddingRight="50dp"
+    android:paddingLeft="30dp"
+   >
+<de.hdodenhof.circleimageview.CircleImageView
+    android:layout_width="120dp"
+    android:layout_height="130dp"
+    android:layout_gravity="start"
+    android:id="@+id/album_art"
+    android:scaleType="centerCrop"
+    android:src="@color/colorPrimary"/>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:gravity="right"
+        android:paddingLeft="20dp"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content">
 <TextView
     android:id="@+id/data"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:fontFamily="sans-serif"
     android:textColor="#ffffff"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:textSize="15sp"
+    android:text="Music Name"
+    android:textSize="17sp"
     android:layout_height="wrap_content"
-    android:layout_marginTop="20dp"
    />
     <TextView
         android:id="@+id/data_album"
-        android:layout_width="wrap_content"
-        android:fontFamily="sans-serif"
-        android:textColor="#e0e0e0"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:textSize="13sp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        />
-    <View
         android:layout_width="match_parent"
-        android:layout_height="0.7dp"
-        android:layout_marginTop="20dp"
-        android:background="#efebe9"
+        android:fontFamily="sans-serif"
+        android:textColor="#bfe0e0e0"
+        android:textSize="14sp"
+        android:text="Music Artist"
+        android:layout_height="wrap_content"
         />
+    </LinearLayout>
 
 </LinearLayout>

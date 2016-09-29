@@ -71,7 +71,7 @@ public class FragmentPlaySmall extends Fragment {
         seekBar=(SeekBar)rootView.findViewById(R.id.seekbar);
 
         relativeLayout=(RelativeLayout)rootView.findViewById(R.id.rel_play);
-        slidingUpPanelLayout=(SlidingUpPanelLayout)getActivity().findViewById(R.id.sliding_layout);
+       // slidingUpPanelLayout=(SlidingUpPanelLayout)getActivity().findViewById(R.id.sliding_layout);
      /*   relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

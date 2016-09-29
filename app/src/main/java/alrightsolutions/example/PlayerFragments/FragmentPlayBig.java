@@ -208,7 +208,7 @@ public class FragmentPlayBig extends Fragment {
 
                            Drawable d=musicImageBlur.getDrawable();
                          Bitmap myBitmap = ((BitmapDrawable)d).getBitmap();
-                         musicImageBlur.setImageBitmap(NativeStackBlur.process(myBitmap,200));
+                         musicImageBlur.setImageBitmap(NativeStackBlur.process(myBitmap,150));
                         musicImage.setImageBitmap(bitmap);
                      //   linePlay.setBackgroundColor(primary);
                     }

@@ -63,7 +63,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                 ListViewPopulator.SONG_ARTIST=artist;
                 ListViewPopulator.SONG_IMAGE=image;
                 ListViewPopulator.SONG_NAME=v;
-                fragmentJump(0);
+               /// fragmentJump(0);
                 context.finish();
             }
         });
@@ -84,7 +84,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         }
 
     }
-    private void fragmentJump(int flag) {
+   /* private void fragmentJump(int flag) {
         if(flag==0) {
             FragmentPlaySmall fragmentPlaySmall = new FragmentPlaySmall();
             switchContent(R.id.frame, fragmentPlaySmall);
@@ -93,7 +93,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             FragmentPlayBig fragmentPlaySmall = new FragmentPlayBig();
             switchContent(R.id.frame, fragmentPlaySmall);
         }
-    }
+    }*/
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView songName, artistName;
         public ViewHolder(View itemView) {
@@ -102,4 +102,5 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             artistName=(TextView)itemView.findViewById(R.id.artist_Name);
         }
     }
+
 }

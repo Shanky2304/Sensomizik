@@ -49,6 +49,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
+import alrightsolutions.example.Customizables.OverlapDecoration;
 import alrightsolutions.example.Model.Music;
 import alrightsolutions.example.PlayerFragments.FragmentPlayBig;
 import alrightsolutions.example.PlayerFragments.FragmentPlaySmall;
@@ -68,7 +69,7 @@ public class MainActivity extends FragmentActivity {
     List<String> musicName,musicArtist;
     List<String> musicAdd,musicImage;
     RecyclerView.LayoutManager linearLayoutManager;
-    SlidingUpPanelLayout slidingUpPanelLayout;
+
     PhoneStateListener phoneStateListener;
     RealmConfiguration realmConfig;
     Realm realm;
@@ -119,78 +120,10 @@ public class MainActivity extends FragmentActivity {
         };
         linearLayoutManager=new LinearLayoutManager(MainActivity.this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        VerticalRecyclerViewFastScroller fastScroller = (VerticalRecyclerViewFastScroller)findViewById(R.id.fast_scroller);
-        fastScroller.setRecyclerView(recyclerView);
-        recyclerView.setOnScrollListener(fastScroller.getOnScrollListener());
-        slidingUpPanelLayout=(SlidingUpPanelLayout)findViewById(R.id.sliding_layout);
-        slidingUpPanelLayout.setPanelHeight(0);
-        slidingUpPanelLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-
-            }
-
-            @Override
-            public void onPanelStateChanged(final View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-                if(newState== SlidingUpPanelLayout.PanelState.COLLAPSED)
-                {   Toast.makeText(getApplicationContext(),"DONE",Toast.LENGTH_LONG).show();
-                    if (findViewById(R.id.frame) != null) {
-
-
-                        if (savedInstanceState != null) {
-                            return;
-                        }
-
-
-
-
-                        FragmentPlaySmall fragmentPlaySmall=new FragmentPlaySmall();
-
-                        FragmentTransaction transaction1 = getSupportFragmentManager().beginTransaction();
-                        transaction1.setCustomAnimations(R.anim.fade_out,R.anim.fade_in,  R.anim.fade_out,R.anim.fade_in);
-                        transaction1.replace(R.id.frame, fragmentPlaySmall);
-                        transaction1.commit();
-                       // getSupportFragmentManager().beginTransaction()
-                              //  .add(R.id.frame,fragmentPlaySmall).commit();
-                     //   getSupportActionBar().show();
-                    }
-                }
-                ViewTreeObserver viewTreeObserver = panel.getViewTreeObserver();
-                viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        panel.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                        x= panel.getMeasuredHeight();
-                        //Toast.makeText(getApplicationContext(), "Expanded" + x, Toast.LENGTH_LONG).show();
-                        //  Toast.makeText(getActivity().getApplicationContext(),""+FragmentLength,Toast.LENGTH_LONG).show();
-                    }
-                });
-                if(newState== SlidingUpPanelLayout.PanelState.EXPANDED && x>1000) {
-                //    Toast.makeText(getApplicationContext(), "Expanded", Toast.LENGTH_LONG).show();
-                    if (findViewById(R.id.frame) != null) {
-
-
-                        if (savedInstanceState != null) {
-                            return;
-                        }
-
-
-                        FragmentPlayBig fr = new FragmentPlayBig();
-
-
-                        FragmentTransaction transaction1 = getSupportFragmentManager().beginTransaction();
-                        transaction1.setCustomAnimations(R.anim.fade_out,R.anim.fade_in,  R.anim.fade_out,R.anim.fade_in);
-                        transaction1.replace(R.id.frame, fr);
-                        transaction1.commit();
-                       // getSupportActionBar().hide();
-                        // getSupportFragmentManager().beginTransaction()
-                        //  .add(R.id.frame,fragmentPlaySmall).commit();
-
-                    }
-                }
-            }
-
-        });
+        recyclerView.addItemDecoration(new OverlapDecoration());
+       // VerticalRecyclerViewFastScroller fastScroller = (VerticalRecyclerViewFastScroller)findViewById(R.id.fast_scroller);
+       // fastScroller.setRecyclerView(recyclerView);
+       // recyclerView.setOnScrollListener(fastScroller.getOnScrollListener());
 
         //recyclerView.setHasFixedSize(true);
         ContentResolver cr = getContentResolver();
@@ -361,24 +294,7 @@ public class MainActivity extends FragmentActivity {
         ft.replace(id, fragment, fragment.toString());
         ft.commitAllowingStateLoss();
     }
-    @Override
-    public void onBackPressed() {
-        if(slidingUpPanelLayout.getPanelState()== SlidingUpPanelLayout.PanelState.COLLAPSED)
-            super.onBackPressed();
-        else if(slidingUpPanelLayout.getPanelState()== SlidingUpPanelLayout.PanelState.EXPANDED) {
-            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
 
-        }
-
-
-        else {
-
-            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
-
-        }
-
-
-    }
     void addToRealm(final List<Music> musics)
     {
         realm.executeTransactionAsync(new Realm.Transaction() {
