@@ -25,7 +25,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -57,7 +57,7 @@ public class FragmentPlaySmall extends Fragment {
     SeekBar seekBar;
     String s,s1;
     ImageView musicImage;
-    SlidingUpPanelLayout slidingUpPanelLayout;
+
     int i=1,k=1,f=1;
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Nullable

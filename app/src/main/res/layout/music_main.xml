@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="#212121"
+    android:padding="30dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent">
+<TextView
+    android:layout_width="match_parent"
+    android:text="Music name"
+    android:textColor="#fff"
+    android:textSize="20sp"
+    android:gravity="center"
+    android:singleLine="true"
+    android:id="@+id/music_name"
+    android:layout_height="wrap_content" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Music Artist"
+        android:gravity="center"
+        android:textSize="15sp"
+        android:id="@+id/music_artist"
+        android:layout_marginTop="10dp"
+        android:singleLine="true"
+        android:fontFamily="sans-serif"
+        android:textColor="#bfe0e0e0"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="30dp"
+        android:layout_height="wrap_content">
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="90dp"
+            android:transitionName="playButton"
+            android:layout_centerInParent="true"
+            android:layout_height="90dp"
+            android:src="@drawable/ic_play_arrow_white_24dp" />
+        <alrightsolutions.example.com.devadvance.circularseekbar.CircularSeekBar
+            android:id="@+id/appCompatSeekBar"
+            android:layout_width="wrap_content"
+            app:start_angle="140"
+            android:transitionName="seekbar"
+            app:end_angle="40"
+            app:circle_x_radius="250dp"
+            app:pointer_radius="1dp"
+            app:pointer_halo_width="1dp"
+            app:pointer_halo_border_width="1dp"
+            app:circle_y_radius="250dp"
+            app:use_custom_radii="true"
+            app:pointer_alpha_ontouch="100"
+            app:circle_stroke_width="2dp"
+            app:circle_progress_color="#26c6da"
+            app:pointer_color="#26c6da"
+            app:pointer_halo_color="#a8e0e0e0"
+            android:layout_height="wrap_content" />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:layout_centerInParent="true"
+        android:id="@+id/album_art"
+        android:transitionName="albumArt"
+        android:scaleType="centerCrop"
+        android:src="@color/colorPrimary"/>
+    </RelativeLayout>
+
+ <!--   <android.support.v7.widget.AppCompatSeekBar
+        android:layout_width="match_parent"
+        android:thumbTint="#26c6da"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:transitionName="seekbar"
+        android:progressTint="#26c6da"
+        android:progressBackgroundTint="#a8e0e0e0"
+        android:layout_height="wrap_content"
+        android:id="@+id/appCompatSeekBar" />
+        -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="50dp"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="left|bottom"
+            android:src="@drawable/arrow_left"/>
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="right|bottom"
+            android:src="@drawable/ic_play_arrow_white_24dp"/>
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:src="@drawable/ic_favorite_white_24dp"/>
+    </FrameLayout>
+</LinearLayout>

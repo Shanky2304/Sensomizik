@@ -1,17 +1,28 @@
 package alrightsolutions.example.Model;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by JohnConnor on 27-Sep-16.
  */
 
 public class Music extends RealmObject {
+    @PrimaryKey
+    int id;
     String musicName;
     String musicArtist;
     String musicURI;
     String albumId;
     String albumArt;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getMusicName() {
         return musicName;

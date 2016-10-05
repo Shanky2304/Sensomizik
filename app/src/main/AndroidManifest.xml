@@ -4,7 +4,6 @@
     package="alrightsolutions.example" >
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-sdk tools:overrideLibrary="xyz.danoz.recyclerviewfastscroller"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,7 +14,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme1.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,6 +22,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".SearchActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".MusicActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
