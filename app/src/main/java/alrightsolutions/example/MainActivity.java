@@ -5,9 +5,11 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LabeledIntent;
 import android.content.pm.PackageManager;
@@ -50,6 +52,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,8 +70,7 @@ import java.util.Random;
 
 import alrightsolutions.example.Customizables.OverlapDecoration;
 import alrightsolutions.example.Model.Music;
-import alrightsolutions.example.PlayerFragments.FragmentPlayBig;
-import alrightsolutions.example.PlayerFragments.FragmentPlaySmall;
+
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -83,6 +85,12 @@ import rx.functions.Func1;
 import shortroid.com.shortroid.ShortRoidPreferences.FileNameException;
 import shortroid.com.shortroid.ShortRoidPreferences.ShortRoidPreferences;
 import xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller;
+
+import static alrightsolutions.example.ListViewPopulator.NOW_PLAYING;
+import static alrightsolutions.example.ListViewPopulator.PROGRESS;
+import static alrightsolutions.example.ListViewPopulator.animation;
+import static alrightsolutions.example.ListViewPopulator.flag;
+import static alrightsolutions.example.MusicService.mediaPlayer;
 
 public class MainActivity extends AppCompatActivity{
     int i=0;
@@ -102,7 +110,6 @@ public class MainActivity extends AppCompatActivity{
     Realm realm;
     TextView musicNameView,musicArtistView;
     EditText searchEditText;
-
     AppCompatSeekBar appCompatSeekBar;
     private boolean wasOnCall;
 
@@ -114,21 +121,150 @@ public class MainActivity extends AppCompatActivity{
         shortRoidPreferences.setPrefString("musicName",ListViewPopulator.NAME);
         shortRoidPreferences.setPrefString("musicArtist",ListViewPopulator.ARTIST);
         shortRoidPreferences.setPrefString("musicArt",ListViewPopulator.IMAGE);
-        shortRoidPreferences.setPrefInt("musicPosition",ListViewPopulator.NOW_PLAYING);
+        shortRoidPreferences.setPrefInt("musicPosition", NOW_PLAYING);
     }
     int songsCount=0;
+    void cont_seek(){
+        appCompatSeekBar.setMax(mediaPlayer.getDuration());
+        appCompatSeekBar.setProgress(PROGRESS);
+        Runnable runnable=new Runnable() {
 
+            @Override
+            public void run() {
+                String time;
+                //  Log.d(TAG, "run");
+                while(mediaPlayer != null) {
+                    if (mediaPlayer.isPlaying()) {
+                        PROGRESS = mediaPlayer.getCurrentPosition();
+                        int min = (PROGRESS / 1000) / 60;
+                        //        Log.d("auto", "seek");
+                        int sec = (PROGRESS / 1000) % 60;
+                        if (sec < 10)
+                            time = "0" + sec;
+                        else
+                            time = "" + sec;
+                        final String elapsedTime = min + ":" + time + "";
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // timer.setText(elapsedTime);
+                                if(flag==1)
+                                {   flag=0;
+                                     Log.d("log","Executed here");
+                                    adapter.notifyItemChanged(NOW_PLAYING);
+                                    floatingActionButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_white_24dp));
+                                }
+                                appCompatSeekBar.setMax(mediaPlayer.getDuration());
+                                appCompatSeekBar.setProgress(PROGRESS);
+                            }
+                        });
+
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        ////
+                    }
+                    else
+                    {   if(flag==0) {
+                       runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // timer.setText(elapsedTime);
+                                flag = 1;
+                                animation.cancel();
+                                floatingActionButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_arrow_white_24dp));
+
+                            }
+
+                        });
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    }
+                }
+            }
+        };
+        thread=new Thread(runnable);
+        thread.start();
+    }
+    Thread thread;
+
+    void seeker(){
+        appCompatSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            // int seek_progress;
+            String time_sec;
+            @Override
+            public void onProgressChanged(final SeekBar seekBar, int progress, boolean fromUser) {
+                PROGRESS=progress;
+                //seek_progress=seek_progress*1000;
+             /*   new Runnable() {
+                    @Override
+                    public void run() {
+                        int min=(PROGRESS/1000)/60;
+                        int sec=(PROGRESS/1000)%60;
+                        if(sec<10)
+                            time_sec="0"+sec;
+                        else
+                            time_sec=""+sec;
+                        String elapsedTime=min+":"+time_sec+"";
+//                        timer.setText(elapsedTime);
+                        //mediaPlayer.seekTo(seek_progress);
+                        new Handler().postDelayed(this,1000);
+                    }
+                }.run();
+*/
+                if(fromUser) {
+                    //  Log.d("blah","blah");
+                    //       new Runnable() {
+                    //         @Override
+                    //       public void run() {
+                    int min=(PROGRESS/1000)/60;
+                    int sec=(PROGRESS/1000)%60;
+                    if(sec<10)
+                        time_sec="0"+sec;
+                    else
+                        time_sec=""+sec;
+                    String elapsedTime=min+":"+time_sec+"";
+                    //    timer.setText(elapsedTime);
+                    //  mediaPlayer.seekTo(PROGRESS);
+                    //         new Handler().postDelayed(this,1000);
+                    //       }
+
+
+                    //}.run();
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if(mediaPlayer!=null){mediaPlayer.seekTo(PROGRESS);}
+            }
+        });
+
+    }
     void init()
     {
         musicNameView=(TextView)findViewById(R.id.music_name);
         musicArtistView=(TextView)findViewById(R.id.music_artist);
         appCompatSeekBar=(AppCompatSeekBar)findViewById(R.id.appCompatSeekBar);
+        floatingActionButton=(FloatingActionButton)findViewById(R.id.fab);
         if(shortRoidPreferences.getPrefBoolean("instance"))
         {
             ListViewPopulator.NAME=shortRoidPreferences.getPrefString("musicName");
             ListViewPopulator.ARTIST=shortRoidPreferences.getPrefString("musicArtist");
             ListViewPopulator.IMAGE=shortRoidPreferences.getPrefString("musicArt");
-            ListViewPopulator.NOW_PLAYING=shortRoidPreferences.getPrefInt("musicPosition");
+            NOW_PLAYING=shortRoidPreferences.getPrefInt("musicPosition");
             String s=ListViewPopulator.NAME;
             if(s.length()>20)
                 s=s.substring(0,20);
@@ -137,6 +273,8 @@ public class MainActivity extends AppCompatActivity{
             if(s.length()>20)
                 s=s.substring(0,20);
             musicArtistView.setText(s);
+            cont_seek();
+            seeker();
         }
     }
     void search()
@@ -182,10 +320,21 @@ public class MainActivity extends AppCompatActivity{
     Toolbar toolbar;
     FloatingSearchView mSearchView;
     ImageView searchImage;
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if(!isMyServiceRunning(MusicService.class))
+        startService(new Intent(this,MusicService.class));
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -210,14 +359,9 @@ public class MainActivity extends AppCompatActivity{
 
         realmConfig = new RealmConfiguration.Builder(MainActivity.this).deleteRealmIfMigrationNeeded().build();
         realm = Realm.getInstance(realmConfig);
-        floatingActionButton=(FloatingActionButton)findViewById(R.id.fab);
 
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this,SearchActivity.class));
-            }
-        });
+
+
         musicName=new ArrayList<>();
         musicArtist=new ArrayList<>();
         musicAdd=new ArrayList<>();
@@ -230,14 +374,14 @@ public class MainActivity extends AppCompatActivity{
             public void onCallStateChanged(int state, String incomingNumber) {
                     if (state == TelephonyManager.CALL_STATE_RINGING) {
                         wasOnCall=true;
-                        try{ListViewPopulator.mediaPlayer.pause();}catch (Exception e){e.printStackTrace();}
+                        try{mediaPlayer.pause();}catch (Exception e){e.printStackTrace();}
                     } else if(state == TelephonyManager.CALL_STATE_IDLE) {
                         if(wasOnCall){
-                       try{ ListViewPopulator.mediaPlayer.start();}catch (Exception e){e.printStackTrace();}}
+                       try{ mediaPlayer.start();}catch (Exception e){e.printStackTrace();}}
                     } else if(state == TelephonyManager.CALL_STATE_OFFHOOK) {
                         try {
                             wasOnCall=true;
-                            ListViewPopulator.mediaPlayer.pause();
+                            mediaPlayer.pause();
                         }catch (Exception e)
                         {
                             e.printStackTrace();

@@ -13,8 +13,9 @@ import android.widget.TextView;
 import java.io.File;
 import java.util.List;
 
-import alrightsolutions.example.PlayerFragments.FragmentPlayBig;
-import alrightsolutions.example.PlayerFragments.FragmentPlaySmall;
+
+
+import static alrightsolutions.example.MusicService.mediaPlayer;
 
 /**
  * Created by JohnConnor on 28-Sep-16.
@@ -56,9 +57,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try{ListViewPopulator.mediaPlayer.stop();}catch (Exception e){e.printStackTrace();}
-                 ListViewPopulator.mediaPlayer= MediaPlayer.create(context, Uri.fromFile(new File(s)));
-                ListViewPopulator.mediaPlayer.start();
+                try{mediaPlayer.stop();}catch (Exception e){e.printStackTrace();}
+                 mediaPlayer= MediaPlayer.create(context, Uri.fromFile(new File(s)));
+                mediaPlayer.start();
                 ListViewPopulator.SONG_ADDRESS=s;
                 ListViewPopulator.SONG_ARTIST=artist;
                 ListViewPopulator.SONG_IMAGE=image;

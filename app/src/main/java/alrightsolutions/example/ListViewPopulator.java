@@ -2,6 +2,8 @@ package alrightsolutions.example;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -20,10 +22,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.RatingCompat;
 import android.support.v4.util.Pair;
@@ -47,6 +52,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.RemoteViews;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,9 +69,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
-import alrightsolutions.example.PlayerFragments.FragmentPlayBig;
-import alrightsolutions.example.PlayerFragments.FragmentPlaySmall;
+
 import shortroid.com.shortroid.ShortAnimation.ShortAnimation;
+
+import static alrightsolutions.example.MusicService.mediaPlayer;
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 /**
  * Created by 1405089 on 7/15/2016.
@@ -78,7 +86,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
     Activity context;
     TextView musicNameView,musicArtistView;
     FloatingActionButton musicControl;
-    public static MediaPlayer mediaPlayer;
+
     public static int PROGRESS=0;
     AppCompatSeekBar seekBar;
     LinearLayout linearLayout;
@@ -88,7 +96,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
     public  static String SONG_ARTIST="";
     public  static String SONG_IMAGE="";
     public static String SONG_ADDRESS="";
-    Animation animation;
+    public  static Animation animation;
     DisplayMetrics metrics;
     ImageView previous,next;
 
@@ -114,6 +122,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
         animation= AnimationUtils.loadAnimation(context,R.anim.rotate_animation);
         animation.setInterpolator(new LinearInterpolator());
 
+
     }
 
     @Override
@@ -124,7 +133,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
     }
 
     void something(String s,int h)
-    {
+    {   Log.d("log",mediaPlayer.toString());
         try{mediaPlayer.stop();mediaPlayer.reset();}catch (Exception e){e.printStackTrace();}
         //To fetch the location of audio files on disk
         mediaPlayer=MediaPlayer.create(context, Uri.fromFile(new File(s)));
@@ -169,6 +178,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
         }
 
         cont_seek();
+        notification(NAME);
         //seekBar.setProgress(0);
         //seekBar.setMax(mediaPlayer.getDuration());
 
@@ -269,6 +279,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
     public static String ARTIST="";
     public static int ID=-1;
     public static int MUSIC_POSITION=0;
+    public static Bitmap bitmapIcon;
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
@@ -332,6 +343,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                     holder.albumArt.setImageBitmap(bitmap);
+                    bitmapIcon=bitmap;
                 }
 
                 @Override
@@ -693,4 +705,21 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
             switchContent(R.id.frame, fragmentPlaySmall);
         }
     }*/
+  void notification(String s)
+  {
+      android.support.v7.app.NotificationCompat.Builder mBuilder = new android.support.v7.app.NotificationCompat.Builder(context);
+      mBuilder.setSmallIcon(R.mipmap.ic_launcher);
+      mBuilder.setContentTitle("Sensomizik");
+      mBuilder.setContentText(s);
+      mBuilder.setAutoCancel(false);
+      Intent resultIntent = new Intent(context, MainActivity.class);
+      TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+      stackBuilder.addParentStack(MainActivity.class);
+      stackBuilder.addNextIntent(resultIntent);
+      PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+      mBuilder.setContentIntent(resultPendingIntent);;
+      NotificationManager mNotificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+      mNotificationManager.notify(101,mBuilder.build());
+  }
 }

@@ -3,6 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:background="#212121"
     android:padding="30dp"
+    android:id="@+id/transitionLayout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent">
 <TextView
@@ -29,13 +30,7 @@
         android:layout_width="match_parent"
         android:layout_marginTop="30dp"
         android:layout_height="wrap_content">
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="90dp"
-            android:transitionName="playButton"
-            android:layout_centerInParent="true"
-            android:layout_height="90dp"
-            android:src="@drawable/ic_play_arrow_white_24dp" />
+
         <alrightsolutions.example.com.devadvance.circularseekbar.CircularSeekBar
             android:id="@+id/appCompatSeekBar"
             android:layout_width="wrap_content"
@@ -63,6 +58,13 @@
         android:transitionName="albumArt"
         android:scaleType="centerCrop"
         android:src="@color/colorPrimary"/>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:transitionName="playButton"
+            android:layout_centerInParent="true"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_play_arrow_white_24dp" />
     </RelativeLayout>
 
  <!--   <android.support.v7.widget.AppCompatSeekBar

@@ -4,14 +4,21 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSeekBar;
+import android.transition.Fade;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -31,7 +38,7 @@ import static alrightsolutions.example.ListViewPopulator.ARTIST;
 import static alrightsolutions.example.ListViewPopulator.IMAGE;
 import static alrightsolutions.example.ListViewPopulator.NAME;
 import static alrightsolutions.example.ListViewPopulator.PROGRESS;
-import static alrightsolutions.example.ListViewPopulator.mediaPlayer;
+import static alrightsolutions.example.MusicService.mediaPlayer;
 
 /**
  * Created by JohnConnor on 29-Sep-16.
@@ -75,11 +82,21 @@ public class MusicActivity extends AppCompatActivity {
         musicArtist.setText(ARTIST);
 
     }
-
+    ViewGroup transitionLayout;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Transition transition = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            transition = TransitionInflater.from(this).inflateTransition(R.transition.change_bound_with_arc);
+            transition.setDuration(300);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getWindow().setSharedElementEnterTransition(transition);
+            }
+        }
+
         setContentView(R.layout.music_main);
+        transitionLayout=(ViewGroup)findViewById(R.id.transitionLayout);
         albumArt=(ImageView)findViewById(R.id.album_art);
         musicName=(TextView)findViewById(R.id.music_name);
         musicControl=(FloatingActionButton)findViewById(R.id.fab);
@@ -94,6 +111,17 @@ public class MusicActivity extends AppCompatActivity {
         artist=b.getString("artist");
         musicName.setText(name);
         musicArtist.setText(artist);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            TransitionManager.beginDelayedTransition(transitionLayout);
+        }
+        ShortAnimation.TranslateAnimation translateAnimation=new ShortAnimation.TranslateAnimation(musicName,-1000f,0f,0f,0f);
+        translateAnimation.setInterpolator(new FastOutSlowInInterpolator());
+        translateAnimation.setDuration(1000);
+        translateAnimation.startAnimation();
+        ShortAnimation.TranslateAnimation translateAnimation1=new ShortAnimation.TranslateAnimation(musicArtist,-1000f,0f,0f,0f);
+        translateAnimation1.setInterpolator(new FastOutSlowInInterpolator());
+        translateAnimation1.setDuration(1000);
+        translateAnimation1.startAnimation();
         if(image!=null && image.length()>0) {
             Picasso.with(MusicActivity.this).load(new File(image)).into(new Target() {
                 @Override
@@ -174,12 +202,16 @@ public class MusicActivity extends AppCompatActivity {
         super.onDetachedFromWindow();
 
     }
+
+
+
     @Override
     protected void onDestroy() {
 
         try {
             Thread.currentThread().interrupt();
             thread.interrupt();
+            Log.d("log","destroyed");
         }catch (Exception e)
         {
             e.printStackTrace();

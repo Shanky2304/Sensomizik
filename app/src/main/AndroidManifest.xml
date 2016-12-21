@@ -24,7 +24,10 @@
         <activity android:name=".SearchActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".MusicActivity"
+            android:noHistory="true"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <service android:name=".MusicService"
+            ></service>
     </application>
 
 </manifest>
