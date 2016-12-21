@@ -38,6 +38,7 @@ import static alrightsolutions.example.ListViewPopulator.ARTIST;
 import static alrightsolutions.example.ListViewPopulator.IMAGE;
 import static alrightsolutions.example.ListViewPopulator.NAME;
 import static alrightsolutions.example.ListViewPopulator.PROGRESS;
+import static alrightsolutions.example.MainActivity.stopThread;
 import static alrightsolutions.example.MusicService.mediaPlayer;
 
 /**
@@ -212,6 +213,7 @@ public class MusicActivity extends AppCompatActivity {
             Thread.currentThread().interrupt();
             thread.interrupt();
             Log.d("log","destroyed");
+            stopThread=1;
         }catch (Exception e)
         {
             e.printStackTrace();
@@ -229,6 +231,10 @@ public class MusicActivity extends AppCompatActivity {
                 String time;
                // Log.d(TAG, "run");
                 while(mediaPlayer != null) {
+                    if(stopThread==1){
+                        stopThread=0;
+                        break;
+                    }
                     if (mediaPlayer.isPlaying()) {
                         PROGRESS = mediaPlayer.getCurrentPosition();
                         int min = (PROGRESS / 1000) / 60;
@@ -248,7 +254,8 @@ public class MusicActivity extends AppCompatActivity {
                                     operation();
                                     Log.d("log", "operation called");
                                 }
-                                Log.d("log", mediaPlayer.getDuration() + " " + seekBar.getProgress());
+
+                                Log.d("log", mediaPlayer.getDuration() + " " + seekBar.getProgress() + "  " + thread.getId());
                                 seekBar.setMax(mediaPlayer.getDuration());
                                 seekBar.setProgress(PROGRESS);
                             }

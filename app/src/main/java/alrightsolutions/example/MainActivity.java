@@ -86,14 +86,19 @@ import shortroid.com.shortroid.ShortRoidPreferences.FileNameException;
 import shortroid.com.shortroid.ShortRoidPreferences.ShortRoidPreferences;
 import xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller;
 
+import static alrightsolutions.example.ListViewPopulator.ADDRESS;
 import static alrightsolutions.example.ListViewPopulator.NOW_PLAYING;
 import static alrightsolutions.example.ListViewPopulator.PROGRESS;
 import static alrightsolutions.example.ListViewPopulator.animation;
 import static alrightsolutions.example.ListViewPopulator.flag;
+import static alrightsolutions.example.ListViewPopulator.temp;
 import static alrightsolutions.example.MusicService.mediaPlayer;
 
 public class MainActivity extends AppCompatActivity{
     int i=0;
+    public static int stopThread=0;
+    public static int isPlayingFromList=0;
+    public static int isPlayingFromMain=0;
     int MY_PERMISSIONS=1;
     int count = 0,x=0;
     FrameLayout frameLayout;
@@ -116,82 +121,96 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d("log","saved preferences");
+        isPlayingFromList=1;
+        Log.d("logan","saved preferences" + isPlayingFromList);
         shortRoidPreferences.setPrefBoolean("instance",true);
         shortRoidPreferences.setPrefString("musicName",ListViewPopulator.NAME);
         shortRoidPreferences.setPrefString("musicArtist",ListViewPopulator.ARTIST);
         shortRoidPreferences.setPrefString("musicArt",ListViewPopulator.IMAGE);
         shortRoidPreferences.setPrefInt("musicPosition", NOW_PLAYING);
+        shortRoidPreferences.setPrefInt("musicProgress",PROGRESS);
+        shortRoidPreferences.setPrefInt("musicDuration",mediaPlayer.getDuration());
+
     }
     int songsCount=0;
-    void cont_seek(){
-        appCompatSeekBar.setMax(mediaPlayer.getDuration());
-        appCompatSeekBar.setProgress(PROGRESS);
-        Runnable runnable=new Runnable() {
+    int duration=0;
+    void cont_seek() {
 
-            @Override
-            public void run() {
-                String time;
-                //  Log.d(TAG, "run");
-                while(mediaPlayer != null) {
-                    if (mediaPlayer.isPlaying()) {
-                        PROGRESS = mediaPlayer.getCurrentPosition();
-                        int min = (PROGRESS / 1000) / 60;
-                        //        Log.d("auto", "seek");
-                        int sec = (PROGRESS / 1000) % 60;
-                        if (sec < 10)
-                            time = "0" + sec;
-                        else
-                            time = "" + sec;
-                        final String elapsedTime = min + ":" + time + "";
+            appCompatSeekBar.setMax(mediaPlayer.getDuration());
+            appCompatSeekBar.setProgress(PROGRESS);
 
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                // timer.setText(elapsedTime);
-                                if(flag==1)
-                                {   flag=0;
-                                     Log.d("log","Executed here");
-                                    adapter.notifyItemChanged(NOW_PLAYING);
-                                    floatingActionButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_white_24dp));
+            Runnable runnable = new Runnable() {
+
+                @Override
+                public void run() {
+                    String time;
+                    Log.d("log", "run2");
+                    while (mediaPlayer != null) {
+                        if (isPlayingFromList == 1) {
+                            isPlayingFromList = 0;
+                            thread.interrupt();
+                            break;
+                        }
+                        if (mediaPlayer.isPlaying()) {
+
+                            PROGRESS = mediaPlayer.getCurrentPosition();
+                            int min = (PROGRESS / 1000) / 60;
+                            //        Log.d("auto", "seek");
+                            int sec = (PROGRESS / 1000) % 60;
+                            if (sec < 10)
+                                time = "0" + sec;
+                            else
+                                time = "" + sec;
+                            final String elapsedTime = min + ":" + time + "";
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // timer.setText(elapsedTime);
+                                    if (flag == 1) {
+                                        flag = 0;
+                                        Log.d("log", "Executed here");
+                                        adapter.notifyItemChanged(NOW_PLAYING);
+                                        floatingActionButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_white_24dp));
+                                    }
+                                    Log.d("log_1", mediaPlayer.getDuration() + " " + appCompatSeekBar.getProgress());
+                                    appCompatSeekBar.setMax(mediaPlayer.getDuration());
+                                    appCompatSeekBar.setProgress(PROGRESS);
                                 }
-                                appCompatSeekBar.setMax(mediaPlayer.getDuration());
-                                appCompatSeekBar.setProgress(PROGRESS);
+                            });
+
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
                             }
-                        });
+                            ////
+                        } else {
+                            if (flag == 0) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        // timer.setText(elapsedTime);
+                                        flag = 1;
+                                        animation.cancel();
+                                        floatingActionButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_arrow_white_24dp));
 
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        ////
-                    }
-                    else
-                    {   if(flag==0) {
-                       runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                // timer.setText(elapsedTime);
-                                flag = 1;
-                                animation.cancel();
-                                floatingActionButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_arrow_white_24dp));
+                                    }
 
+                                });
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                             }
-
-                        });
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
                         }
-                    }
                     }
                 }
-            }
-        };
-        thread=new Thread(runnable);
-        thread.start();
+            };
+            thread = new Thread(runnable);
+            thread.start();
+
     }
     Thread thread;
 
@@ -264,7 +283,10 @@ public class MainActivity extends AppCompatActivity{
             ListViewPopulator.NAME=shortRoidPreferences.getPrefString("musicName");
             ListViewPopulator.ARTIST=shortRoidPreferences.getPrefString("musicArtist");
             ListViewPopulator.IMAGE=shortRoidPreferences.getPrefString("musicArt");
+            PROGRESS=shortRoidPreferences.getPrefInt("musicProgress");
             NOW_PLAYING=shortRoidPreferences.getPrefInt("musicPosition");
+            duration=shortRoidPreferences.getPrefInt("musicDuration");
+            temp=NOW_PLAYING+1;
             String s=ListViewPopulator.NAME;
             if(s.length()>20)
                 s=s.substring(0,20);
@@ -273,9 +295,32 @@ public class MainActivity extends AppCompatActivity{
             if(s.length()>20)
                 s=s.substring(0,20);
             musicArtistView.setText(s);
-            cont_seek();
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    int i=0;
+                    while (i>=0) {
+                       if(mediaPlayer!=null) {
+                           if (mediaPlayer.isPlaying()) {
+                               flag = 1;
+
+                           }
+                           cont_seek();
+                           break;
+                       }
+                        i++;
+                        if(i==100)
+                            i=0;
+                    }
+
+
+                }
+
+            }).start();
             seeker();
         }
+
     }
     void search()
     {
@@ -488,6 +533,7 @@ public class MainActivity extends AppCompatActivity{
                                     Log.d("Mine",musics.size()+"");
                                     adapter = new ListViewPopulator(MainActivity.this,musicId, musicName, musicAdd, musicArtist, musicImage);
                                     recyclerView.setAdapter(adapter);
+
                                 }
                                 if(songsCount!=realmCount)
                                 {
@@ -654,6 +700,7 @@ public class MainActivity extends AppCompatActivity{
             }
             adapter = new ListViewPopulator(MainActivity.this,musicId, musicName, musicAdd, musicArtist, musicImage);
             recyclerView.setAdapter(adapter);
+            linearLayoutManager.scrollToPosition(NOW_PLAYING);
 
 
     }

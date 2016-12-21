@@ -20,6 +20,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/lview"
         android:layout_width="match_parent"
+
         android:layout_marginBottom="95dp"
         android:layout_height="wrap_content" />
    <xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller

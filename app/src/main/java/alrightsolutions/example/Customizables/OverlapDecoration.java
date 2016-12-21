@@ -18,8 +18,18 @@ public class OverlapDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void getItemOffsets (Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+        final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) view.getLayoutParams();
 
-        outRect.set(0, vertOverlap, 0, 0);
+
+        final int position = params.getViewAdapterPosition();
+
+        if (position > 0) {
+            outRect.set(0, vertOverlap, 0, 0);
+
+        } else {
+            outRect.setEmpty();
+        }
 
     }
+
 }

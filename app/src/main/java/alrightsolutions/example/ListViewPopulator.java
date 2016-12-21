@@ -61,6 +61,7 @@ import com.commit451.nativestackblur.NativeStackBlur;
 import com.github.nisrulz.sensey.FlipDetector;
 import com.github.nisrulz.sensey.Sensey;
 import com.github.nisrulz.sensey.ShakeDetector;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -71,7 +72,12 @@ import java.util.Random;
 
 
 import shortroid.com.shortroid.ShortAnimation.ShortAnimation;
+import shortroid.com.shortroid.ShortRoidPreferences.FileNameException;
+import shortroid.com.shortroid.ShortRoidPreferences.ShortRoidPreferences;
 
+import static alrightsolutions.example.MainActivity.isPlayingFromList;
+import static alrightsolutions.example.MainActivity.isPlayingFromMain;
+import static alrightsolutions.example.MusicService.firstRun;
 import static alrightsolutions.example.MusicService.mediaPlayer;
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -86,7 +92,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
     Activity context;
     TextView musicNameView,musicArtistView;
     FloatingActionButton musicControl;
-
+    ShortRoidPreferences shortRoidPreferences;
     public static int PROGRESS=0;
     AppCompatSeekBar seekBar;
     LinearLayout linearLayout;
@@ -108,6 +114,11 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
         this.musicAdd=musicAdd;
         this.musicArtist=musicArtist;
         this.musicImage=musicImage;
+        try {
+            shortRoidPreferences=new ShortRoidPreferences(context,"music");
+        } catch (FileNameException e) {
+            e.printStackTrace();
+        }
         musicNameView=(TextView)context.findViewById(R.id.music_name);
         musicArtistView=(TextView)context.findViewById(R.id.music_artist);
         musicControl=(FloatingActionButton)context.findViewById(R.id.fab);
@@ -124,7 +135,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
 
 
     }
-
+    public static String ADDRESS="";
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context).inflate(R.layout.listview,parent,false);
@@ -156,12 +167,13 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
         NOW_PLAYING=h;
         ID=musicId.get(NOW_PLAYING);
         notifyItemChanged(NOW_PLAYING);
-        String s1=musicName.get(h);
+        String s1=NAME;
         if(s1.length()>20) {
             s1 = s1.substring(0, 20);
             s1=s1+"..";
         }
-        String s2=musicArtist.get(h);
+        String s2=ARTIST;
+        Log.d("log",NAME +"  "+ ARTIST);
         if(s2.length()>20) {
             s2 = s2.substring(0, 20);
             s2=s2+"..";
@@ -176,15 +188,20 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
         {
             e.printStackTrace();
         }
-
-        cont_seek();
+        shortRoidPreferences.setPrefString("musicName",ListViewPopulator.NAME);
+        shortRoidPreferences.setPrefString("musicArtist",ListViewPopulator.ARTIST);
+        shortRoidPreferences.setPrefString("musicArt",ListViewPopulator.IMAGE);
+        shortRoidPreferences.setPrefInt("musicPosition", NOW_PLAYING);
+        shortRoidPreferences.setPrefInt("musicProgress",PROGRESS);
+        isPlayingFromMain=1;
+        isPlayingFromList=0;
         notification(NAME);
         //seekBar.setProgress(0);
         //seekBar.setMax(mediaPlayer.getDuration());
 
     }
 
-    int temp=0;
+   static int temp=0;
 
     int i=0;
    /* void setImages(String s)
@@ -392,7 +409,8 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
 
 
         }
-        seeker();
+        //cont_seek();
+       // seeker();
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -456,10 +474,19 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
                         animation.cancel();
                     }
                     else
+                    {   if(firstRun==1)
                     {
+                        something(musicAdd.get(NOW_PLAYING),NOW_PLAYING);
+                        firstRun=0;
+                    }
+                        else{
+
                         mediaPlayer.start();
+                    }
+
                         musicControl.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_pause_white_24dp));
                         notifyItemChanged(NOW_PLAYING);
+                        change();
                     }
                 //    Log.d("click", "Kuch bhi");
                 } catch (NullPointerException e) {
@@ -472,15 +499,23 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
 }
     static int flag=0;
     void cont_seek(){
+
         seekBar.setMax(mediaPlayer.getDuration());
         seekBar.setProgress(PROGRESS);
-        Runnable runnable=new Runnable() {
+        final Runnable runnable=new Runnable() {
 
             @Override
             public void run() {
                 String time;
               //  Log.d(TAG, "run");
                 while(mediaPlayer != null) {
+                    if(isPlayingFromList==1)
+                    {
+                       // isPlayingFromList=0;
+                        thread.interrupt();
+
+                        break;
+                    }
                     if (mediaPlayer.isPlaying()) {
                         PROGRESS = mediaPlayer.getCurrentPosition();
                         int min = (PROGRESS / 1000) / 60;
@@ -502,6 +537,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
                                     notifyItemChanged(NOW_PLAYING);
                                     musicControl.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_pause_white_24dp));
                                 }
+                                Log.d("log_", mediaPlayer.getDuration() + " " + seekBar.getProgress() +"  "+ isPlayingFromList +" " + thread.getId());
                                 seekBar.setMax(mediaPlayer.getDuration());
                                 seekBar.setProgress(PROGRESS);
                             }
@@ -608,7 +644,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
 
             if(temp!=musicAdd.size()-1)
             something(musicAdd.get(temp),temp);
-            Log.d("log","ChangeCalled");
+            Log.d("log","ChangeCalled" + temp +"  "+ NOW_PLAYING);
             temp=temp+1;
             seekBar.setProgress(0);
             seekBar.setMax(mediaPlayer.getDuration());

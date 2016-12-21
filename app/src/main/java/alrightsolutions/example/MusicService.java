@@ -27,6 +27,7 @@ import static alrightsolutions.example.ListViewPopulator.bitmapIcon;
 public class MusicService extends Service{
     @Nullable
     public static MediaPlayer mediaPlayer;
+    public static int firstRun=0;
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -37,6 +38,10 @@ public class MusicService extends Service{
         mediaPlayer=new MediaPlayer();
         try {
             shortRoidPreferences=new ShortRoidPreferences(getApplicationContext(),"music");
+            if(shortRoidPreferences.getPrefBoolean("instance"))
+            {
+                firstRun=1;
+            }
         } catch (FileNameException e) {
             e.printStackTrace();
         }

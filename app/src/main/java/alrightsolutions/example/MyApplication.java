@@ -3,6 +3,8 @@ package alrightsolutions.example;
 import android.app.Activity;
 import android.app.Application;
 
+
+
 /**
  * Created by JohnConnor on 28-Sep-16.
  */
@@ -14,6 +16,7 @@ public class MyApplication extends Application{
     public void onCreate() {
         super.onCreate();
         context=this;
+
     }
     public static void setMainActivity(MainActivity mainActivity)
     {
