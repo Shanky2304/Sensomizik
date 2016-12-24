@@ -86,27 +86,27 @@ import static android.content.Context.NOTIFICATION_SERVICE;
  */
 public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.ViewHolder>{
     private static final String TAG = "ListViewPopulator";
-    List<String> musicName,musicImage;
-    List<String> musicAdd,musicArtist;
-    List<Integer> musicId;
-    Activity context;
-    TextView musicNameView,musicArtistView;
-    FloatingActionButton musicControl;
-    ShortRoidPreferences shortRoidPreferences;
-    public static int PROGRESS=0;
-    AppCompatSeekBar seekBar;
-    LinearLayout linearLayout;
-    TextView timer;
+    private List<String> musicName,musicImage;
+    private List<String> musicAdd,musicArtist;
+    private List<Integer> musicId;
+    private Activity context;
+    private TextView musicNameView,musicArtistView;
+    private FloatingActionButton musicControl;
+    private ShortRoidPreferences shortRoidPreferences;
+    static int PROGRESS=0;
+    private AppCompatSeekBar seekBar;
+    private LinearLayout linearLayout;
+    private TextView timer;
     public static int BACKGROUND_COLOR=0x00;
-    public  static String SONG_NAME="";
-    public  static String SONG_ARTIST="";
-    public  static String SONG_IMAGE="";
-    public static String SONG_ADDRESS="";
-    public  static Animation animation;
+    static String SONG_NAME="";
+    static String SONG_ARTIST="";
+    static String SONG_IMAGE="";
+    static String SONG_ADDRESS="";
+    static Animation animation;
     DisplayMetrics metrics;
     ImageView previous,next;
 
-    public ListViewPopulator(Activity context,List<Integer> musicId, List<String> musicName, List<String> musicAdd,List<String> musicArtist,List<String> musicImage)
+    ListViewPopulator(Activity context,List<Integer> musicId, List<String> musicName, List<String> musicAdd,List<String> musicArtist,List<String> musicImage)
     {
         this.context=context;
         this.musicId=musicId;
