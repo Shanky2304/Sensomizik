@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:background="#212121"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Settings"
+    android:fontFamily="sans-serif"
+    android:textSize="25sp"
+    android:layout_marginTop="20dp"
+    android:paddingLeft="20dp"
+    android:textColor="#fff"
+    />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.8dp"
+        android:layout_marginTop="10dp"
+        android:background="#fff"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:padding="20dp"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Activate Sensor"
+            android:id="@+id/sens_txt1"
+            android:fontFamily="sans-serif"
+            android:textSize="20sp"
+            android:textColor="#fff"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Control music using Sensors"
+            android:layout_below="@id/sens_txt1"
+            android:id="@+id/sens_txt2"
+            android:fontFamily="sans-serif"
+            android:textSize="15sp"
+            android:textColor="#bfe0e0e0"
+            />
+        <android.support.v7.widget.AppCompatCheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sensor_active"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            />
+    </RelativeLayout>
+</LinearLayout>
+</ScrollView>

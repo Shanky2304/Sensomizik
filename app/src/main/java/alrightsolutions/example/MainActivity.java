@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity{
     EditText searchEditText;
     AppCompatSeekBar appCompatSeekBar;
     private boolean wasOnCall;
-
+    ImageView goTosettings;
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -278,6 +278,7 @@ public class MainActivity extends AppCompatActivity{
         musicArtistView=(TextView)findViewById(R.id.music_artist);
         appCompatSeekBar=(AppCompatSeekBar)findViewById(R.id.appCompatSeekBar);
         floatingActionButton=(FloatingActionButton)findViewById(R.id.fab);
+        goTosettings=(ImageView)findViewById(R.id.setting_image);
         if(shortRoidPreferences.getPrefBoolean("instance"))
         {
             ListViewPopulator.NAME=shortRoidPreferences.getPrefString("musicName");
@@ -321,6 +322,16 @@ public class MainActivity extends AppCompatActivity{
             seeker();
         }
 
+    }
+    void settingIntent()
+    {
+        goTosettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this,SettingsActivity.class));
+                overridePendingTransition(android.support.design.R.anim.abc_fade_in, android.support.design.R.anim.abc_fade_out);
+            }
+        });
     }
     void search()
     {
@@ -394,6 +405,7 @@ public class MainActivity extends AppCompatActivity{
 
         init();
         search();
+        settingIntent();
         searchImage=(ImageView)findViewById(R.id.search_image);
         searchImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -707,7 +719,7 @@ public class MainActivity extends AppCompatActivity{
     void enterReveal() {
         final View myView = findViewById(R.id.card_reveal);
         final View view1=findViewById(R.id.search_image);
-
+        final View setting_view=findViewById(R.id.setting_image);
         int cx = myView.getMeasuredWidth() / 2;
         int cy = myView.getMeasuredHeight() / 2;
 
@@ -719,12 +731,14 @@ public class MainActivity extends AppCompatActivity{
                     null;
             anim = ViewAnimationUtils.createCircularReveal(myView, cx, cy, 0, finalRadius);
             view1.setVisibility(View.GONE);
+            setting_view.setVisibility(View.GONE);
             myView.setVisibility(View.VISIBLE);
             anim.start();
         }
         else{
             Animation animation= AnimationUtils.loadAnimation(MainActivity.this,R.anim.fade_out);
             view1.setVisibility(View.GONE);
+            setting_view.setVisibility(View.GONE);
             myView.setVisibility(View.VISIBLE);
             myView.startAnimation(animation);
     }
@@ -735,6 +749,7 @@ public class MainActivity extends AppCompatActivity{
         // previously visible view
         final View myView = findViewById(R.id.card_reveal);
         final View view1=findViewById(R.id.search_image);
+        final View setting_view=findViewById(R.id.setting_image);
         // get the center for the clipping circle
         int cx = myView.getMeasuredWidth() / 2;
         int cy = myView.getMeasuredHeight() / 2;
@@ -755,6 +770,7 @@ public class MainActivity extends AppCompatActivity{
                     super.onAnimationEnd(animation);
                     myView.setVisibility(View.INVISIBLE);
                     view1.setVisibility(View.VISIBLE);
+                    setting_view.setVisibility(View.VISIBLE);
 
                 }
             });
