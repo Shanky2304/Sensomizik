@@ -65,6 +65,7 @@ import com.github.nisrulz.sensey.ShakeDetector;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -192,7 +193,12 @@ public class MainActivity extends AppCompatActivity{
                                     public void run() {
                                         // timer.setText(elapsedTime);
                                         flag = 1;
-                                        animation.cancel();
+                                        try {
+                                            animation.cancel();
+                                        }
+                                        catch (NullPointerException ne){
+                                            ne.printStackTrace();
+                                        }
                                         floatingActionButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_arrow_white_24dp));
 
                                     }
@@ -385,6 +391,7 @@ public class MainActivity extends AppCompatActivity{
         }
         return false;
     }
+    int ra=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -515,7 +522,6 @@ public class MainActivity extends AppCompatActivity{
                             //arrayList_Title.add(data);
                             // Toast.makeText(getApplicationContext(),data,Toast.LENGTH_LONG).show();
                             Log.d("lsf", data);
-                            int ra=new Random().nextInt();
                             if(b) {
                                 final Music music = new Music();
                                 music.setId(ra);
@@ -535,6 +541,7 @@ public class MainActivity extends AppCompatActivity{
                             songsCount++;
                             cursor.moveToNext();
                             count--;
+                            ra++;
                         }
                         cursor.moveToFirst();
                         runOnUiThread(new Runnable() {

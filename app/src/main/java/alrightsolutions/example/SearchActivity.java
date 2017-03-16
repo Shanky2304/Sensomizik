@@ -17,7 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.commit451.nativestackblur.NativeStackBlur;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +76,7 @@ public class SearchActivity extends AppCompatActivity {
         images.setImageDrawable(transitionDrawable);
         transitionDrawable.setCrossFadeEnabled(false);
         transitionDrawable.startTransition(2500);
-        new Handler().postDelayed(new Runnable() {
+      /*  new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 Bitmap bitmaps = Bitmap.createBitmap(images.getWidth(),images.getHeight(), Bitmap.Config.ARGB_8888);
@@ -84,7 +84,7 @@ public class SearchActivity extends AppCompatActivity {
                 gd.draw(canvas);
                 images.setImageBitmap(NativeStackBlur.process(bitmaps,200));
             }
-        },2500);
+        },2500);*/
 
 
     }

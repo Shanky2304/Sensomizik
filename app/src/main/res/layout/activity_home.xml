@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#212121"
+    android:background="#ffffff"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
@@ -15,10 +15,10 @@
             android:background="#fff"
             android:elevation="11dp"
 
-            app:bubbleTab_circleColor="#1976d2"
+            app:bubbleTab_circleColor="@color/colorPrimaryDark"
             app:bubbleTab_circleRatio="1.25"
-            app:bubbleTab_image0="@drawable/ic_playlist"
-            app:bubbleTab_image1="@drawable/ic_home"/>
+            app:bubbleTab_image0="@drawable/ic_home"
+            app:bubbleTab_image1="@drawable/ic_playlist"/>
 
 
 

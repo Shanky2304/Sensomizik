@@ -23,6 +23,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".MainActivity"/>
         <activity
             android:name=".SearchActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -30,6 +32,12 @@
             android:name=".MusicActivity"
             android:noHistory="true"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity android:name=".SettingsActivity"
+            android:theme="@style/AppTheme"/>
+
+        <activity android:name=".PlaylistSelector"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <service android:name=".MusicService" />
 

@@ -1,37 +1,47 @@
 package alrightsolutions.example;
 
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Button;
 
 /**
- * Created by Shanky23 on 12/24/2016.
+ * Created by Shanky23 on 2/19/2017.
  */
 
-public class HomeFragment extends Fragment {
-
-    private static final String ARG_SECTION_NUMBER = "section_number";
-
-
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
-
-
+public class HomeFragment extends android.support.v4.app.Fragment {
+    @Nullable
+    Context context;
+    Button button;
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_home, container, false);
-        //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-        //textView.setText("Hello World");
-        //return rootView;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.home_fragment,container,false);
     }
 
-    public static Fragment newInstance() {
+    public static android.support.v4.app.Fragment newInstance() {
         return new HomeFragment();
     }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        context = getActivity();
+        //button = new Button(context);
+        button = (Button) view.findViewById(R.id.app);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity().getApplicationContext(),MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+    }
+
 }

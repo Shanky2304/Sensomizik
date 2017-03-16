@@ -8,9 +8,9 @@ import android.support.v4.app.FragmentPagerAdapter;
  * Created by Shanky23 on 12/24/2016.
  */
 
-public class HomeAdapter extends FragmentPagerAdapter{
+class HomeAdapter extends FragmentPagerAdapter{
 
-    public HomeAdapter(FragmentManager fm) {
+    HomeAdapter(FragmentManager fm) {
         super(fm);
     }
 
@@ -18,6 +18,10 @@ public class HomeAdapter extends FragmentPagerAdapter{
     public Fragment getItem(int position) {
         switch (position)
         {
+            case 0:
+                return HomeFragment.newInstance();
+            case 1:
+                return PlaylistFragment.newInstance();
             default:
                 return HomeFragment.newInstance();
         }

@@ -57,7 +57,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.commit451.nativestackblur.NativeStackBlur;
+
 import com.github.nisrulz.sensey.FlipDetector;
 import com.github.nisrulz.sensey.Sensey;
 import com.github.nisrulz.sensey.ShakeDetector;
@@ -203,7 +203,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
 
    static int temp=0;
 
-    int i=0;
+    private int i=0;
    /* void setImages(String s)
     {   try {
         Picasso.with(context).load(new File(s)).into(new Target() {
@@ -410,7 +410,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
 
         }
         //cont_seek();
-       // seeker();
+        //seeker();
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -656,30 +656,37 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
 
 
         }catch(Throwable throwable){throwable.printStackTrace();}}
-    void op()
-{
+    void op(){
     Sensey.getInstance().startFlipDetection(new FlipDetector.FlipListener() {
         @Override
         public void onFaceUp() {
-            if (i == 0) {
-                try {
-                    mediaPlayer.start();
-                    notifyItemChanged(NOW_PLAYING);
-                    i = 1;
-                    h=1;
-                }catch (NullPointerException e){e.printStackTrace();}
+            if(shortRoidPreferences.getPrefBoolean("sensorActive")) {
+                if (i == 0) {
+                    try {
+                        mediaPlayer.start();
+                        notifyItemChanged(NOW_PLAYING);
+                        i = 1;
+                        h = 1;
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
 
         @Override
         public void onFaceDown() {
-            if (i == 1) {
-                try {
-                    mediaPlayer.pause();
-                    notifyItemChanged(NOW_PLAYING);
-                    i = 0;
-                    h=0;
-                }catch (NullPointerException e){e.printStackTrace();}
+            if(shortRoidPreferences.getPrefBoolean("sensorActive")) {
+                if (i == 1) {
+                    try {
+                        mediaPlayer.pause();
+                        notifyItemChanged(NOW_PLAYING);
+                        i = 0;
+                        h = 0;
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     });
@@ -688,9 +695,11 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
         @Override
         public void onShakeDetected() {
             try {
-                if(h==1) {
-                    temp=randomG(musicAdd.size() - 1, 0);
-                    something(musicAdd.get(temp),temp);
+                if(shortRoidPreferences.getPrefBoolean("sensorActive")) {
+                    if (h == 1) {
+                        temp = randomG(musicAdd.size() - 1, 0);
+                        something(musicAdd.get(temp), temp);
+                    }
                 }
             }catch (Throwable throwable)
             {
