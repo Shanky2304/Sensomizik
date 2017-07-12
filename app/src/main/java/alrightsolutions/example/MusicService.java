@@ -6,12 +6,15 @@ import android.app.Service;
 import android.content.Intent;
 import android.media.MediaDataSource;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
+
+import java.io.File;
 
 import shortroid.com.shortroid.ShortRoidPreferences.FileNameException;
 import shortroid.com.shortroid.ShortRoidPreferences.ShortRoidPreferences;
@@ -36,12 +39,15 @@ public class MusicService extends Service{
     @Override
     public void onCreate() {
         mediaPlayer=new MediaPlayer();
+
         try {
             shortRoidPreferences=new ShortRoidPreferences(getApplicationContext(),"music");
             if(shortRoidPreferences.getPrefBoolean("instance"))
             {
                 firstRun=1;
             }
+            if(shortRoidPreferences.getPrefString("musicAddress")!=null)
+            mediaPlayer=MediaPlayer.create(getApplicationContext(), Uri.fromFile(new File(shortRoidPreferences.getPrefString("musicAddress"))));
         } catch (FileNameException e) {
             e.printStackTrace();
         }

@@ -84,6 +84,7 @@ public class MusicActivity extends AppCompatActivity {
 
     }
     ViewGroup transitionLayout;
+    int from;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,6 +111,7 @@ public class MusicActivity extends AppCompatActivity {
         image=b.getString("image");
         name=b.getString("name");
         artist=b.getString("artist");
+        from=b.getInt("from");
         musicName.setText(name);
         musicArtist.setText(artist);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -146,16 +148,18 @@ public class MusicActivity extends AppCompatActivity {
         {
             albumArt.setImageDrawable(getResources().getDrawable(R.drawable.music));
         }
-        if(mediaPlayer.isPlaying())
-        {
-            albumArt.startAnimation(animation);
-            musicControl.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_white_24dp));
+        if (mediaPlayer != null) {
+            if(mediaPlayer.isPlaying())
+            {
+                albumArt.startAnimation(animation);
+                musicControl.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_white_24dp));
 
-        }
-        else
-        {
-            animation.cancel();
-            musicControl.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_arrow_white_24dp));
+            }
+            else
+            {
+                animation.cancel();
+                musicControl.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_arrow_white_24dp));
+            }
         }
         musicControl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -222,7 +226,9 @@ public class MusicActivity extends AppCompatActivity {
     }
 
     void cont_seek(){
-        seekBar.setMax(mediaPlayer.getDuration());
+        if (mediaPlayer != null) {
+            seekBar.setMax(mediaPlayer.getDuration());
+        }
         seekBar.setProgress(PROGRESS);
         Runnable runnable=new Runnable() {
 
@@ -389,5 +395,16 @@ public class MusicActivity extends AppCompatActivity {
             }
         });
 */
+    }
+    @Override
+    public void onBackPressed() {
+            if(from==0) {
+                startActivity(new Intent(MusicActivity.this, HomeActivity.class));
+                overridePendingTransition(android.support.design.R.anim.abc_fade_in,android.support.design.R.anim.abc_fade_out);
+
+            }
+
+            super.onBackPressed();
+
     }
 }

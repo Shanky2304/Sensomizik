@@ -1,16 +1,12 @@
 package alrightsolutions.example;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import alrightsolutions.example.Model.Music;
+import alrightsolutions.example.adapter.SearchAdapter;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -56,8 +53,8 @@ public class SearchActivity extends AppCompatActivity {
         images=(ImageView)findViewById(R.id.music_image_blured);
         linearLayoutManager=new LinearLayoutManager(SearchActivity.this);
         sRecyclerview.setLayoutManager(linearLayoutManager);
-        realmConfig = new RealmConfiguration.Builder(SearchActivity.this).deleteRealmIfMigrationNeeded().build();
-        realm = Realm.getInstance(realmConfig);
+      Realm.init(context);
+        realm=Realm.getDefaultInstance();
         setBackground();
         operation();
     }

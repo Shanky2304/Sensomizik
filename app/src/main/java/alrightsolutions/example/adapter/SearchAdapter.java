@@ -1,4 +1,4 @@
-package alrightsolutions.example;
+package alrightsolutions.example.adapter;
 
 import android.app.Activity;
 import android.media.MediaPlayer;
@@ -14,6 +14,9 @@ import java.io.File;
 import java.util.List;
 
 
+import alrightsolutions.example.ListViewPopulator;
+import alrightsolutions.example.MainActivity;
+import alrightsolutions.example.R;
 
 import static alrightsolutions.example.MusicService.mediaPlayer;
 
@@ -60,10 +63,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                 try{mediaPlayer.stop();}catch (Exception e){e.printStackTrace();}
                  mediaPlayer= MediaPlayer.create(context, Uri.fromFile(new File(s)));
                 mediaPlayer.start();
-                ListViewPopulator.SONG_ADDRESS=s;
-                ListViewPopulator.SONG_ARTIST=artist;
-                ListViewPopulator.SONG_IMAGE=image;
-                ListViewPopulator.SONG_NAME=v;
+
                /// fragmentJump(0);
                 context.finish();
             }

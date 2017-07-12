@@ -14,11 +14,10 @@ import java.util.List;
 import alrightsolutions.example.Customizables.OverlapDecoration;
 import alrightsolutions.example.Model.Music;
 import alrightsolutions.example.Model.Playlist;
+import alrightsolutions.example.adapter.PlaylistAdapter;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
-
-import static alrightsolutions.example.ListViewPopulator.NOW_PLAYING;
 
 /**
  * Created by Shanky23 on 2/18/2017.
@@ -39,8 +38,8 @@ public class PlaylistSelector extends AppCompatActivity {
        super.onCreate(savedInstanceState);
        setContentView(R.layout.playlist_selector);
        playlistname = getIntent().getStringExtra("playlistname");
-       realmConfig = new RealmConfiguration.Builder(PlaylistSelector.this).deleteRealmIfMigrationNeeded().build();
-       realm = Realm.getInstance(realmConfig);
+       Realm.init(this);
+       realm = Realm.getDefaultInstance();
        recyclerView = (RecyclerView) findViewById(R.id.selectlist);
        linearLayoutManager=new LinearLayoutManager(PlaylistSelector.this);
        recyclerView.setLayoutManager(linearLayoutManager);

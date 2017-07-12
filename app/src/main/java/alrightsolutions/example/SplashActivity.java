@@ -119,8 +119,8 @@ public class SplashActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute(){
-            realmConfig = new RealmConfiguration.Builder(SplashActivity.this).deleteRealmIfMigrationNeeded().build();
-            realm = Realm.getInstance(realmConfig);
+            Realm.init(SplashActivity.this);
+            realm = Realm.getDefaultInstance();
         }
 
         @Override

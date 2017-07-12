@@ -1,39 +1,20 @@
 package alrightsolutions.example;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.TransitionDrawable;
-import android.media.FaceDetector;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.provider.MediaStore;
-import android.provider.Settings;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.media.MediaBrowserCompat;
-import android.support.v4.media.RatingCompat;
 import android.support.v4.util.Pair;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -43,35 +24,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.CycleInterpolator;
 import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
-import android.widget.Button;
-import android.widget.CursorAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
-import android.widget.RemoteViews;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.github.nisrulz.sensey.FlipDetector;
 import com.github.nisrulz.sensey.Sensey;
 import com.github.nisrulz.sensey.ShakeDetector;
-import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
 
-import shortroid.com.shortroid.ShortAnimation.ShortAnimation;
 import shortroid.com.shortroid.ShortRoidPreferences.FileNameException;
 import shortroid.com.shortroid.ShortRoidPreferences.ShortRoidPreferences;
 
@@ -79,7 +49,6 @@ import static alrightsolutions.example.MainActivity.isPlayingFromList;
 import static alrightsolutions.example.MainActivity.isPlayingFromMain;
 import static alrightsolutions.example.MusicService.firstRun;
 import static alrightsolutions.example.MusicService.mediaPlayer;
-import static android.content.Context.NOTIFICATION_SERVICE;
 
 /**
  * Created by 1405089 on 7/15/2016.
@@ -101,7 +70,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
     static String SONG_NAME="";
     static String SONG_ARTIST="";
     static String SONG_IMAGE="";
-    static String SONG_ADDRESS="";
+    public static String SONG_ADDRESS="";
     static Animation animation;
     DisplayMetrics metrics;
     ImageView previous,next;
@@ -143,8 +112,9 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
         return new ViewHolder(v);
     }
 
+
     void something(String s,int h)
-    {   Log.d("log",mediaPlayer.toString());
+    {  // Log.d("log",mediaPlayer.toString());
         try{mediaPlayer.stop();mediaPlayer.reset();}catch (Exception e){e.printStackTrace();}
         //To fetch the location of audio files on disk
         mediaPlayer=MediaPlayer.create(context, Uri.fromFile(new File(s)));
@@ -419,6 +389,7 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
                 bundle.putString("image",IMAGE);
                 bundle.putString("name", NAME);
                 bundle.putString("artist",ARTIST);
+                bundle.putInt("from",1);
                 intent.putExtra("music",bundle);
                 Pair<View, String> p1 = Pair.create((View)holder.albumArt, "albumArt");
                 Pair<View, String> p2 = Pair.create((View)musicControl, "playButton");
@@ -637,25 +608,39 @@ public class ListViewPopulator extends RecyclerView.Adapter<ListViewPopulator.Vi
 
     }
        int h=0;
+    int g=0;
     void change(){
-        try{mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-        @Override
-        public void onCompletion(MediaPlayer mp) {
+            g=1;
+            try {
+                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
 
-            if(temp!=musicAdd.size()-1)
-            something(musicAdd.get(temp),temp);
-            Log.d("log","ChangeCalled" + temp +"  "+ NOW_PLAYING);
-            temp=temp+1;
-            seekBar.setProgress(0);
-            seekBar.setMax(mediaPlayer.getDuration());
-            change();
-        }
+                        if (temp != musicAdd.size() - 1)
+                            something(musicAdd.get(temp), temp);
+                        Log.d("log", "ChangeCalled" + temp + "  " + NOW_PLAYING);
+                        temp = temp + 1;
+                        seekBar.setProgress(0);
+                        seekBar.setMax(mediaPlayer.getDuration());
+                        if(HomeActivity.isOn()!=null)
+                        {
+                            HomeActivity.isOn().startActivity(new Intent(HomeActivity.isOn(),HomeActivity.class));
+                            HomeActivity.isOn().overridePendingTransition(android.support.design.R.anim.abc_fade_in,android.support.design.R.anim.abc_fade_out);
+                            HomeActivity.isOn().finish();
+
+                        }
+                         change();
+                    }
 
 
-    });
+                });
 
 
-        }catch(Throwable throwable){throwable.printStackTrace();}}
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
+
+    }
     void op(){
     Sensey.getInstance().startFlipDetection(new FlipDetector.FlipListener() {
         @Override

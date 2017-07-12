@@ -90,6 +90,7 @@ import xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScrol
 import static alrightsolutions.example.ListViewPopulator.ADDRESS;
 import static alrightsolutions.example.ListViewPopulator.NOW_PLAYING;
 import static alrightsolutions.example.ListViewPopulator.PROGRESS;
+import static alrightsolutions.example.ListViewPopulator.SONG_ADDRESS;
 import static alrightsolutions.example.ListViewPopulator.animation;
 import static alrightsolutions.example.ListViewPopulator.flag;
 import static alrightsolutions.example.ListViewPopulator.temp;
@@ -130,7 +131,10 @@ public class MainActivity extends AppCompatActivity{
         shortRoidPreferences.setPrefString("musicArt",ListViewPopulator.IMAGE);
         shortRoidPreferences.setPrefInt("musicPosition", NOW_PLAYING);
         shortRoidPreferences.setPrefInt("musicProgress",PROGRESS);
-        shortRoidPreferences.setPrefInt("musicDuration",mediaPlayer.getDuration());
+        shortRoidPreferences.setPrefString("musicAddress",SONG_ADDRESS);
+        if (mediaPlayer != null) {
+            shortRoidPreferences.setPrefInt("musicDuration",mediaPlayer.getDuration());
+        }
 
     }
     int songsCount=0;
@@ -382,22 +386,13 @@ public class MainActivity extends AppCompatActivity{
     Toolbar toolbar;
     FloatingSearchView mSearchView;
     ImageView searchImage;
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
+
     int ra=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if(!isMyServiceRunning(MusicService.class))
-        startService(new Intent(this,MusicService.class));
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -421,8 +416,8 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-        realmConfig = new RealmConfiguration.Builder(MainActivity.this).deleteRealmIfMigrationNeeded().build();
-        realm = Realm.getInstance(realmConfig);
+        Realm.init(MainActivity.this);
+        realm = Realm.getDefaultInstance();
 
 
 
@@ -623,7 +618,8 @@ public class MainActivity extends AppCompatActivity{
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==MY_PERMISSIONS){
-            Log.d("okY","okay");
+            MainActivity.this.finish();
+            startActivity(new Intent(MainActivity.this,MainActivity.class));
         }
     }
     public void switchContent(int id, Fragment fragment) {
@@ -814,7 +810,12 @@ public class MainActivity extends AppCompatActivity{
     public void onBackPressed() {
         final View myView = findViewById(R.id.card_reveal);
         if(myView.getVisibility()==View.INVISIBLE)
-        super.onBackPressed();
+        {
+
+            startActivity(new Intent(MainActivity.this,HomeActivity.class));
+            overridePendingTransition(android.support.design.R.anim.abc_fade_in,android.support.design.R.anim.abc_fade_out);
+            super.onBackPressed();
+        }
         else {
             if(searchEditText.getText().length()>0)
             searchEditText.setText("");

@@ -1,10 +1,9 @@
-package alrightsolutions.example;
+package alrightsolutions.example.adapter;
 
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,29 +11,25 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
 
-import alrightsolutions.example.Model.Music;
 import alrightsolutions.example.Model.Playlist;
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
+import alrightsolutions.example.PlaylistSelector;
+import alrightsolutions.example.R;
 import io.realm.RealmResults;
 import shortroid.com.shortroid.ShortAnimation.ShortAnimation;
-import shortroid.com.shortroid.ShortRoidDB.ShortRoidDB;
 
 /**
  * Created by Shanky23 on 2/18/2017.
  */
 
 public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.PlaylistViewHolder> {
-    Playlist playlist= new Playlist();
+    public Playlist playlist= new Playlist();
     private List<String> musicName,musicImage;
     private List<String> musicAdd,musicArtist;
     private List<Integer> musicId;
@@ -46,7 +41,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
     RealmResults<Playlist> playlists;
     private PlaylistSelector playlistselector;
 
-    PlaylistAdapter(Activity context, List<Integer> musicId, List<String> musicName, List<String> musicAdd, List<String> musicArtist,List<String> musicImage, String playlistname ){
+    public PlaylistAdapter(Activity context, List<Integer> musicId, List<String> musicName, List<String> musicAdd, List<String> musicArtist,List<String> musicImage, String playlistname ){
         this.musicId = musicId;
         this.musicName = musicName;
         this.musicAdd = musicAdd;

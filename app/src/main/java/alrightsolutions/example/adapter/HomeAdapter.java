@@ -1,16 +1,19 @@
-package alrightsolutions.example;
+package alrightsolutions.example.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import alrightsolutions.example.HomeFragment;
+import alrightsolutions.example.PlaylistFragment;
+
 /**
  * Created by Shanky23 on 12/24/2016.
  */
 
-class HomeAdapter extends FragmentPagerAdapter{
+public class HomeAdapter extends FragmentPagerAdapter{
 
-    HomeAdapter(FragmentManager fm) {
+    public HomeAdapter(FragmentManager fm) {
         super(fm);
     }
 

@@ -102,8 +102,10 @@ public class PlaylistFragment extends Fragment{
         public View getView(int position, View view, ViewGroup viewGroup) {
             View grid;
             LayoutInflater inflater = (LayoutInflater) gcontext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            tempText=new TextView(gcontext);
             if(position == 0){
 
+                tempText.setText("Add Playlist");
             }
             else {
 
