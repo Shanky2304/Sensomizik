@@ -1,2 +1,2 @@
 # Sensomizik
-A basic Music sensor App
+A basic Music sensor App with music recommendations
